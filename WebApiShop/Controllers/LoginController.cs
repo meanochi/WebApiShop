@@ -1,15 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Entities;
+using Microsoft.AspNetCore.Mvc;
+using Services;
 using System.Text.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WebApiShop.Controllers
 {
+   
     [Route("api/[controller]")]
     [ApiController]
     public class LoginController : ControllerBase
     {
-        string filePath = "..\\file1.txt";
+        LoginService loginService = new LoginService();
 
         // GET: api/<LoginController>
         [HttpGet]
@@ -28,19 +31,12 @@ namespace WebApiShop.Controllers
 
         // POST api/<LoginController>
         [HttpPost]
-        public ActionResult<LoginClass> GetLogin([FromBody] LoginClass loginUser)
+        public ActionResult<User> GetLogin([FromBody] LoginUser loginUser)
         {
-            using (StreamReader reader = System.IO.File.OpenText(filePath))
-            {
-                string? currentUserInFile;
-                while ((currentUserInFile = reader.ReadLine()) != null)
-                {
-                    UserClass user = JsonSerializer.Deserialize<UserClass>(currentUserInFile);
-                    if (user.UserName == loginUser.UserName && user.Password == loginUser.Password)
-                        return Ok(user);
-                }
-            }
-            return NoContent();
+            User user = loginService.Login(loginUser);
+            if (user == null)
+                return NoContent();
+            return Ok(user);
         }
 
         // PUT api/<LoginController>/5

@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WebApiShop
+namespace Entities
 {
-    public class UserClass
+    public class User
     {
         [EmailAddress]
         public string UserName { get; set; }
@@ -13,6 +13,6 @@ namespace WebApiShop
         [Required]
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public int UserID { get; set; }
+        public int Id { get; set; }
     }
 }

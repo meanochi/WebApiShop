@@ -17,7 +17,7 @@ async function login(user) {
     if (response.status == 200) {
         const dataObj = await response.json();
         sessionStorage.setItem("user", dataObj.firstName)
-        sessionStorage.setItem("userID", dataObj.userID)
+        sessionStorage.setItem("userID", dataObj.id)
         window.location.href = "UserDetails.html"
     }
     else {
