@@ -32,8 +32,8 @@
             display: flex;
             flex-direction: column;
         }
-        .loginbutton, .signupbutton{
-            all: unset; 
+        .loginbutton, .signupbutton, #checkPassStrength {
+            all: unset;
             cursor: pointer;
             padding: 5px 10px;
             color: white;
@@ -67,6 +67,8 @@
                 <input type="email" id="username2" />
                 <label for="password2">Password</label>
                 <input type="password" id="password2" />
+                <div class="progressBar"></div>
+                <button id="checkPassStrength" >check password strength</button>
                 <label for="firstname">First Name</label>
                 <input type="text" id="firstname" />
                 <label for="lastname">Last Name</label>

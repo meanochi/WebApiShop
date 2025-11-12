@@ -34,6 +34,8 @@ namespace WebApiShop.Controllers
         public ActionResult <User> POST([FromBody] User user)
         {
             user = userService.addUser(user);
+            if (user == null)
+                return BadRequest("password strenth is too low");
             return CreatedAtAction(nameof(Get), new {user.Id }, user);
         }
 

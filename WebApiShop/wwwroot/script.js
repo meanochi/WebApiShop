@@ -49,8 +49,11 @@ async function signUp(user) {
     if (response.status == 201) {
         alert(`User added successfully! ☑️\nplease log in to get inside`)
     }
+    else if (response.status == 400) {
+        alert(`❗Your password is too weak`)
+    }
     else {
-        alert(`Error occured. status ${response.status}`)
+        alert(`❌ Error occured. status ${response.status}`)
     }
 
 }
@@ -67,7 +70,26 @@ signUpButton.addEventListener("click", (event) => {
     }
     signUp(user)
 })
-
+//-----Check Password Strength
+const checkButton = document.querySelector("#checkPassStrength")
+checkButton.addEventListener("click", async (event) => {
+    const password = document.querySelector("#password2").value
+    const strength = await checkPassword(password)
+    const progressBar = document.querySelector(".progressBar")
+    progressBar.innerHTML = `<progress value =${strength}></progress>`
+})
+async function checkPassword(password) {
+    const response = await fetch(`api/Password/${password}`);
+    const data = await response.json();
+    console.log(data)
+    if (response.status == 200) {
+        console.log(data.strength)
+        return data.strength/ 4;
+    }
+    else {
+        return 0;
+    }
+}
 // ----Show----
 const form = document.querySelector(".signup")
 const openForm = document.querySelector("#openform")
