@@ -35,7 +35,7 @@ namespace WebApiShop.Controllers
         {
             user = userService.addUser(user);
             if (user == null)
-                return BadRequest("password strenth is too low");
+                return BadRequest("Password is too weak");
             return CreatedAtAction(nameof(Get), new {user.Id }, user);
         }
 
