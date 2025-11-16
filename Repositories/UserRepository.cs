@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace Repositories
 {
-    public class UserRepository
+    public class UserRepository : IUserRepository
     {
         string filePath = "..\\file.txt";
         public User getUserById(int id)
@@ -30,7 +30,7 @@ namespace Repositories
             return user;
         }
 
-        public void UpdateUser(User userToUpdate)
+        public User UpdateUser(User userToUpdate)
         {
             string textToReplace = string.Empty;
             using (StreamReader reader = System.IO.File.OpenText(filePath))
@@ -51,6 +51,7 @@ namespace Repositories
                 text = text.Replace(textToReplace, JsonSerializer.Serialize(userToUpdate));
                 System.IO.File.WriteAllText(filePath, text);
             }
+            return userToUpdate;
         }
     }
 }

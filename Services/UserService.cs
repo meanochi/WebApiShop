@@ -4,25 +4,35 @@ using System.Text.Json;
 using Zxcvbn;
 namespace Services
 {
-    public class UserService
+    public class UserService : IUserService
     {
-        PasswordService passService = new PasswordService();
-        UserRepository repository = new UserRepository();
+        private readonly IPasswordService _passService;
+        private readonly IUserRepository _repository;
+
+        public UserService(IPasswordService passService, IUserRepository repository)
+        {
+            _passService = passService;
+            _repository = repository;
+        }
+
         public User getUserById(int id)
         {
-            return repository.getUserById(id);
+            return _repository.getUserById(id);
         }
 
         public User? addUser(User user)
         {
-            if (passService.getStrengthByPassword(user.Password).Strength < 2)
+            if (_passService.getStrengthByPassword(user.Password).Strength < 2)
                 return null;
-            return repository.addUser(user);
+            return _repository.addUser(user);
         }
 
-        public void UpdateUser(User userToUpdate)
+        public User? UpdateUser(User userToUpdate)
         {
-            repository.UpdateUser(userToUpdate);
+            if (_passService.getStrengthByPassword(userToUpdate.Password).Strength < 2)
+                return null;
+            _repository.UpdateUser(userToUpdate);
+            return userToUpdate;
         }
 
     }

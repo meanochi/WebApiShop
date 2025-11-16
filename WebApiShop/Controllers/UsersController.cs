@@ -11,7 +11,14 @@ namespace WebApiShop.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        UserService userService = new UserService();
+        private readonly IUserService _userService;
+
+        public UsersController(IUserService userService)
+        {
+            _userService = userService;
+        }
+
+
         // GET: api/<UsersController>
         [HttpGet]
         public string Get()
@@ -23,7 +30,7 @@ namespace WebApiShop.Controllers
         [HttpGet("{id}")]
         public ActionResult<User> Get(int id)
         {
-            User user = userService.getUserById(id);
+            User user = _userService.getUserById(id);
             if(user == null)
                 return NoContent();
             return Ok(user);
@@ -31,9 +38,9 @@ namespace WebApiShop.Controllers
         
         // POST api/<UsersController>
         [HttpPost]
-        public ActionResult <User> POST([FromBody] User user)
+        public ActionResult<User> POST([FromBody] User user)
         {
-            user = userService.addUser(user);
+            user = _userService.addUser(user);
             if (user == null)
                 return BadRequest("Password is too weak");
             return CreatedAtAction(nameof(Get), new {user.Id }, user);
@@ -41,9 +48,13 @@ namespace WebApiShop.Controllers
 
         // PUT api/<UsersController>/5
         [HttpPut("{id}")]
-        public void Put(int id,[FromBody] User userToUpdate)
+        public void PUT([FromBody] User userToUpdate)
         {
-            userService.UpdateUser(userToUpdate);
+            userToUpdate = _userService.UpdateUser(userToUpdate);
+            if (userToUpdate == null)
+                 BadRequest("Password is too weak");
+            else
+                Ok(userToUpdate);
 
         }
 

@@ -8,12 +8,19 @@ using System.Threading.Tasks;
 
 namespace Services
 {
-    public class LoginService
+
+    public class LoginService : ILoginService
     {
-        LoginRepository repository = new LoginRepository();
+        private readonly ILoginRepository _repository;
+
+        public LoginService(ILoginRepository repository)
+        {
+            _repository = repository;
+        }
+
         public User Login(LoginUser user)
         {
-            return repository.Login(user);
+            return _repository.Login(user);
         }
 
     }

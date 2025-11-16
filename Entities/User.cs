@@ -6,7 +6,6 @@ namespace Entities
     {
         [EmailAddress]
         public string UserName { get; set; }
-       [StringLength(8)]
         public string Password { get; set; }
         [Required]
         public string FirstName { get; set; }

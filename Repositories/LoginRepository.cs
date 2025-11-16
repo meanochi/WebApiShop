@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace Repositories
 {
-    public class LoginRepository
+    public class LoginRepository : ILoginRepository
     {
         string filePath = "..\\file.txt";
 

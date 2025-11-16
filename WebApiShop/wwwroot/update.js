@@ -31,8 +31,11 @@ async function update(user) {
         alert("User's details updated successfully ✔️")
         window.location.href = "UserDetails.html";
     }
+    else if (response.status == 400) {
+        alert(`❗Your password is too weak`)
+    }
     else {
-        alert(`Error occured. status ${response.status}`)
+        alert(`❌ Error occured. status ${response.status}`)
     }
 
 }

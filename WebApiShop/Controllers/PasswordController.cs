@@ -10,7 +10,14 @@ namespace WebApiShop.Controllers
     [ApiController]
     public class PasswordController : ControllerBase
     {
-        PasswordService service = new PasswordService();
+        private readonly IPasswordService _service;
+
+        public PasswordController(IPasswordService service)
+        {
+            _service = service;
+        }
+
+
         // GET: api/<PasswordController>
         [HttpGet]
         public IEnumerable<string> Get()
@@ -19,20 +26,24 @@ namespace WebApiShop.Controllers
         }
 
         // GET api/<PasswordController>/5
-        [HttpGet("{pass}")]
-        public ActionResult<PasswordEntity> Get(string pass)
+        //[HttpGet("{pass}")]
+        //public ActionResult<PasswordEntity> Get(string pass)
+        //{
+        //    PasswordEntity password = _service.getStrengthByPassword(pass);
+        //    if (password == null)
+        //        return NoContent();
+        //    return Ok(password);
+        //}
+
+        // POST api/<PasswordController>
+        [HttpPost]
+        public ActionResult<PasswordEntity> POST([FromBody] string pass)
         {
-            PasswordEntity password = service.getStrengthByPassword(pass);
+            PasswordEntity password = _service.getStrengthByPassword(pass);
             if (password == null)
                 return NoContent();
             return Ok(password);
         }
-
-        // POST api/<PasswordController>
-        [HttpPost]
-        //public ActionResult<PasswordEntity> Post([FromBody] PasswordEntity password)
-        //{
-        //}
 
         // PUT api/<PasswordController>/5
         [HttpPut("{id}")]
