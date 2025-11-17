@@ -55,10 +55,8 @@ namespace WebApiShop.Controllers
             if (userToUpdate == null)
                 return BadRequest("Password is too weak");
             else
-            {
                 return Ok(userToUpdate);
 
-            }
 
         }
 
