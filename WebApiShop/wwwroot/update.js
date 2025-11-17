@@ -26,7 +26,7 @@ async function update(user) {
     });
     const data = await response;
     console.log('PUT Data:', data);
-    if (response.ok) {
+    if (response.status == 200) {
         sessionStorage.setItem("user", user.FirstName);
         alert("User's details updated successfully ✔️")
         window.location.href = "UserDetails.html";

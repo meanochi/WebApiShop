@@ -48,13 +48,17 @@ namespace WebApiShop.Controllers
 
         // PUT api/<UsersController>/5
         [HttpPut("{id}")]
-        public void PUT([FromBody] User userToUpdate)
+        public ActionResult<User> PUT([FromBody] User userToUpdate,int id)
         {
+            userToUpdate.Id = id;
             userToUpdate = _userService.UpdateUser(userToUpdate);
             if (userToUpdate == null)
-                 BadRequest("Password is too weak");
+                return BadRequest("Password is too weak");
             else
-                Ok(userToUpdate);
+            {
+                return Ok(userToUpdate);
+
+            }
 
         }
 
