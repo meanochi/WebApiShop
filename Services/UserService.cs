@@ -15,21 +15,21 @@ namespace Services
             _repository = repository;
         }
 
-        public User getUserById(int id)
+        public User GetUserById(int id)
         {
-            return _repository.getUserById(id);
+            return _repository.GetUserById(id);
         }
 
-        public User? addUser(User user)
+        public User? AddUser(User user)
         {
-            if (_passService.getStrengthByPassword(user.Password).Strength < 2)
+            if (_passService.GetStrengthByPassword(user.Password).Strength < 2)
                 return null;
-            return _repository.addUser(user);
+            return _repository.AddUser(user);
         }
 
         public User? UpdateUser(User userToUpdate)
         {
-            if (_passService.getStrengthByPassword(userToUpdate.Password).Strength < 2)
+            if (_passService.GetStrengthByPassword(userToUpdate.Password).Strength < 2)
                 return null;
             _repository.UpdateUser(userToUpdate);
             return userToUpdate;

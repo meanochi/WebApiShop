@@ -10,7 +10,7 @@ namespace Services
     public class PasswordService : IPasswordService
     {
         public PasswordService() { }
-        public PasswordEntity getStrengthByPassword(string password)
+        public PasswordEntity GetStrengthByPassword(string password)
         {
             var result = Zxcvbn.Core.EvaluatePassword(password);
             int strength = result.Score;

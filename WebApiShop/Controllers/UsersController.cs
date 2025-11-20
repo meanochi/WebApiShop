@@ -19,51 +19,37 @@ namespace WebApiShop.Controllers
         }
 
 
-        // GET: api/<UsersController>
-        [HttpGet]
-        public string Get()
-        {
-            return "value";
-        }
+        
 
         // GET api/<UsersController>/5
         [HttpGet("{id}")]
         public ActionResult<User> Get(int id)
         {
-            User user = _userService.getUserById(id);
+            User user = _userService.GetUserById(id);
             if(user == null)
-                return NoContent();
+                return NotFound();
             return Ok(user);
         }
         
         // POST api/<UsersController>
         [HttpPost]
-        public ActionResult<User> POST([FromBody] User user)
+        public ActionResult<User> Post([FromBody] User user)
         {
-            user = _userService.addUser(user);
+            user = _userService.AddUser(user);
             if (user == null)
-                return BadRequest("Password is too weak");
+                return BadRequest("Password is not strong enough");
             return CreatedAtAction(nameof(Get), new {user.Id }, user);
         }
 
         // PUT api/<UsersController>/5
         [HttpPut("{id}")]
-        public ActionResult<User> PUT([FromBody] User userToUpdate,int id)
+        public ActionResult Put(int id, [FromBody] User userToUpdate)
         {
             userToUpdate.Id = id;
             userToUpdate = _userService.UpdateUser(userToUpdate);
             if (userToUpdate == null)
-                return BadRequest("Password is too weak");
-            else
-                return Ok(userToUpdate);
-
-
-        }
-
-        // DELETE api/<UsersController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+                return BadRequest("Password is not strong enough");
+            return NoContent();
         }
     }
 }

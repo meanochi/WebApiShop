@@ -18,43 +18,14 @@ namespace WebApiShop.Controllers
         }
 
 
-        // GET: api/<PasswordController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/<PasswordController>/5
-        //[HttpGet("{pass}")]
-        //public ActionResult<PasswordEntity> Get(string pass)
-        //{
-        //    PasswordEntity password = _service.getStrengthByPassword(pass);
-        //    if (password == null)
-        //        return NoContent();
-        //    return Ok(password);
-        //}
-
         // POST api/<PasswordController>
         [HttpPost]
-        public ActionResult<PasswordEntity> POST([FromBody] string pass)
+        public ActionResult<PasswordEntity> Post([FromBody] string password)
         {
-            PasswordEntity password = _service.getStrengthByPassword(pass);
-            if (password == null)
-                return NoContent();
-            return Ok(password);
-        }
-
-        // PUT api/<PasswordController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<PasswordController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            PasswordEntity passwordEntity = _service.GetStrengthByPassword(password);
+            if (passwordEntity == null)
+                return BadRequest("Invalid password");
+            return Ok(passwordEntity);
         }
     }
 }
