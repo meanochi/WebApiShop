@@ -16,6 +16,22 @@ updateButton.addEventListener("click", (event) => {
     update(user)
 })
 async function update(user) {
+    // Check password strength before submitting
+    const response1 = await fetch('api/Password', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(user.Password)
+    });
+    if (response1.ok) {
+        const data = await response1.json();
+        if (data.strength < 2) {
+            alert(`❗Your password is too weak (score: ${data.strength}/4). Please choose a stronger password.`);
+            return;
+        }
+    }
+
     const id = sessionStorage.getItem("userID")
     const response = await fetch(`api/Users/${id}`, {
         method: 'PUT',

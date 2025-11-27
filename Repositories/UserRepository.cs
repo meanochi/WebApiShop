@@ -5,7 +5,7 @@ namespace Repositories
 {
     public class UserRepository : IUserRepository
     {
-        string filePath = "..\\file.txt";
+        string filePath = Path.Combine(Directory.GetCurrentDirectory(), "file.txt");
         public User getUserById(int id)
         {
             using (StreamReader reader = System.IO.File.OpenText(filePath))
@@ -14,7 +14,7 @@ namespace Repositories
                 while ((currentUserInFile = reader.ReadLine()) != null)
                 {
                     User user = JsonSerializer.Deserialize<User>(currentUserInFile);
-                    if (user.Id == id)
+                    if (user != null && user.Id == id)
                         return user;
                 }
                 return null;
@@ -40,7 +40,7 @@ namespace Repositories
                 {
 
                     User user = JsonSerializer.Deserialize<User>(currentUserInFile);
-                    if (user.Id == userToUpdate.Id)
+                    if (user != null && user.Id == userToUpdate.Id)
                         textToReplace = currentUserInFile;
                 }
             }

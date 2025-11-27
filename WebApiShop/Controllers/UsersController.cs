@@ -12,10 +12,12 @@ namespace WebApiShop.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IPasswordService _passwordService;
 
-        public UsersController(IUserService userService)
+        public UsersController(IUserService userService, IPasswordService passwordService)
         {
             _userService = userService;
+            _passwordService = passwordService;
         }
 
 
@@ -32,7 +34,7 @@ namespace WebApiShop.Controllers
         {
             User user = _userService.getUserById(id);
             if(user == null)
-                return NoContent();
+                return NotFound();
             return Ok(user);
         }
         
@@ -40,9 +42,13 @@ namespace WebApiShop.Controllers
         [HttpPost]
         public ActionResult<User> POST([FromBody] User user)
         {
+            int passwordScore = _passwordService.getStrengthByPassword(user.Password).Strength;
+            if (passwordScore < 2)
+                return BadRequest($"Password too weak (score: {passwordScore}/4). Minimum required: 2");
+
             user = _userService.addUser(user);
             if (user == null)
-                return BadRequest("Password is too weak");
+                return BadRequest("Failed to create user");
             return CreatedAtAction(nameof(Get), new {user.Id }, user);
         }
 
@@ -50,10 +56,14 @@ namespace WebApiShop.Controllers
         [HttpPut("{id}")]
         public ActionResult<User> PUT([FromBody] User userToUpdate,int id)
         {
+            int passwordScore = _passwordService.getStrengthByPassword(userToUpdate.Password).Strength;
+            if (passwordScore < 2)
+                return BadRequest($"Password too weak (score: {passwordScore}/4). Minimum required: 2");
+
             userToUpdate.Id = id;
             userToUpdate = _userService.UpdateUser(userToUpdate);
             if (userToUpdate == null)
-                return BadRequest("Password is too weak");
+                return BadRequest("Failed to update user");
             else
                 return Ok(userToUpdate);
 
