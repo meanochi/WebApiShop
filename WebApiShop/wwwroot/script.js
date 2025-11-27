@@ -8,7 +8,6 @@ async function login(user) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Content-Type': 'application/json',
         },
         body: JSON.stringify(user)
     });
@@ -37,6 +36,13 @@ loginButton.addEventListener("click", (event) => {
 
 // ----Signup----
 async function signUp(user) {
+    // Check password strength before submitting
+    const passwordStrength = await checkPassword(user.Password);
+    if (passwordStrength * 4 < 2) {
+        alert(`❗Your password is too weak (score: ${Math.round(passwordStrength * 4)}/4). Please choose a stronger password.`);
+        return;
+    }
+
     const response = await fetch('api/Users', {
         method: 'POST',
         headers: {
@@ -97,6 +103,17 @@ async function checkPassword(password) {
         return 0;
     }
 }
+// ----Auto-check password on input----
+const password2Input = document.querySelector("#password2")
+password2Input.addEventListener("input", async (event) => {
+    const password = password2Input.value
+    if (password.length > 0) {
+        const strength = await checkPassword(password)
+        const progressBar = document.querySelector(".progressBar progress")
+        progressBar.value = strength
+    }
+})
+
 // ----Show----
 const form = document.querySelector(".signup")
 const openForm = document.querySelector("#openform")

@@ -22,15 +22,11 @@ namespace Services
 
         public User? addUser(User user)
         {
-            if (_passService.getStrengthByPassword(user.Password).Strength < 2)
-                return null;
             return _repository.addUser(user);
         }
 
         public User? UpdateUser(User userToUpdate)
         {
-            if (_passService.getStrengthByPassword(userToUpdate.Password).Strength < 2)
-                return null;
             _repository.UpdateUser(userToUpdate);
             return userToUpdate;
         }
