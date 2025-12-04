@@ -12,7 +12,7 @@ namespace WebApiShop.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private readonly ILoginService _loginService;
+        ILoginService _loginService;
 
         public LoginController(ILoginService loginService)
         {
@@ -36,9 +36,9 @@ namespace WebApiShop.Controllers
 
         // POST api/<LoginController>
         [HttpPost]
-        public ActionResult<User> GetLogin([FromBody] LoginUser loginUser)
+        public async Task<ActionResult<User>> GetLogin([FromBody] LoginUser loginUser)
         {
-            User user = _loginService.Login(loginUser);
+            User user = await _loginService.Login(loginUser);
             if (user == null)
                 return NoContent();
             return Ok(user);

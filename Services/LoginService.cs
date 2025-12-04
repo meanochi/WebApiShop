@@ -11,16 +11,16 @@ namespace Services
 
     public class LoginService : ILoginService
     {
-        private readonly ILoginRepository _repository;
+        ILoginRepository _repository;
 
         public LoginService(ILoginRepository repository)
         {
             _repository = repository;
         }
 
-        public User Login(LoginUser user)
+        public async Task<User> Login(LoginUser user)
         {
-            return _repository.Login(user);
+            return await _repository.Login(user);
         }
 
     }

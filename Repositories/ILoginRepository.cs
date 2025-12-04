@@ -4,6 +4,6 @@ namespace Repositories
 {
     public interface ILoginRepository
     {
-        User Login(LoginUser user);
+        Task<User> Login(LoginUser user);
     }
 }

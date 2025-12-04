@@ -5,52 +5,29 @@ namespace Repositories
 {
     public class UserRepository : IUserRepository
     {
-        string filePath = "..\\file.txt";
-        public User getUserById(int id)
+        WebApiShop_329084941Context _context;
+        public UserRepository(WebApiShop_329084941Context webApiShop_329084941Context)
         {
-            using (StreamReader reader = System.IO.File.OpenText(filePath))
-            {
-                string? currentUserInFile;
-                while ((currentUserInFile = reader.ReadLine()) != null)
-                {
-                    User user = JsonSerializer.Deserialize<User>(currentUserInFile);
-                    if (user.Id == id)
-                        return user;
-                }
-                return null;
-            }
+            _context = webApiShop_329084941Context;
+        }
+        public async Task<User> getUserById(int id)
+        {
+            return await _context.Users.FindAsync(id);
+
         }
 
-        public User addUser(User user)
+        public async Task<User> addUser(User user)
         {
-            int numberOfUsers = System.IO.File.ReadLines(filePath).Count();
-            user.Id = numberOfUsers + 1;
-            string userJson = JsonSerializer.Serialize(user);
-            System.IO.File.AppendAllText(filePath, userJson + Environment.NewLine);
+           await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
             return user;
+
         }
 
-        public User UpdateUser(User userToUpdate)
+        public async Task<User> UpdateUser(User userToUpdate)
         {
-            string textToReplace = string.Empty;
-            using (StreamReader reader = System.IO.File.OpenText(filePath))
-            {
-                string currentUserInFile;
-                while ((currentUserInFile = reader.ReadLine()) != null)
-                {
-
-                    User user = JsonSerializer.Deserialize<User>(currentUserInFile);
-                    if (user.Id == userToUpdate.Id)
-                        textToReplace = currentUserInFile;
-                }
-            }
-
-            if (textToReplace != string.Empty)
-            {
-                string text = System.IO.File.ReadAllText(filePath);
-                text = text.Replace(textToReplace, JsonSerializer.Serialize(userToUpdate));
-                System.IO.File.WriteAllText(filePath, text);
-            }
+            _context.Users.Update(userToUpdate);
+            await _context.SaveChangesAsync();
             return userToUpdate;
         }
     }

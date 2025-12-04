@@ -4,6 +4,6 @@ namespace Services
 {
     public interface ILoginService
     {
-        User Login(LoginUser user);
+        Task<User> Login(LoginUser user);
     }
 }

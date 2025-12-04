@@ -11,7 +11,7 @@ namespace WebApiShop.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IUserService _userService;
+        IUserService _userService;
 
         public UsersController(IUserService userService)
         {
@@ -28,9 +28,9 @@ namespace WebApiShop.Controllers
 
         // GET api/<UsersController>/5
         [HttpGet("{id}")]
-        public ActionResult<User> Get(int id)
+        public async Task<ActionResult<User>> Get(int id)
         {
-            User user = _userService.getUserById(id);
+            User user = await _userService.getUserById(id);
             if(user == null)
                 return NoContent();
             return Ok(user);
@@ -38,9 +38,9 @@ namespace WebApiShop.Controllers
         
         // POST api/<UsersController>
         [HttpPost]
-        public ActionResult<User> POST([FromBody] User user)
+        public async  Task<ActionResult<User>> POST([FromBody] User user)
         {
-            user = _userService.addUser(user);
+            user = await _userService.addUser(user);
             if (user == null)
                 return BadRequest("Password is too weak");
             return CreatedAtAction(nameof(Get), new {user.Id }, user);
@@ -48,10 +48,10 @@ namespace WebApiShop.Controllers
 
         // PUT api/<UsersController>/5
         [HttpPut("{id}")]
-        public ActionResult<User> PUT([FromBody] User userToUpdate,int id)
+        public async Task<ActionResult<User>> PUT([FromBody] User userToUpdate,int id)
         {
             userToUpdate.Id = id;
-            userToUpdate = _userService.UpdateUser(userToUpdate);
+            userToUpdate = await _userService.UpdateUser(userToUpdate);
             if (userToUpdate == null)
                 return BadRequest("Password is too weak");
             else

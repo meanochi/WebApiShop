@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
 
@@ -6,22 +7,15 @@ namespace Repositories
 {
     public class LoginRepository : ILoginRepository
     {
-        string filePath = "..\\file.txt";
-
-        public User Login(LoginUser user)
+        WebApiShop_329084941Context _context;
+        public LoginRepository(WebApiShop_329084941Context webApiShop_329084941Context)
         {
-            using (StreamReader reader = System.IO.File.OpenText(filePath))
-            {
-                string? currentUserInFile;
-                while ((currentUserInFile = reader.ReadLine()) != null)
-                {
-                    User fullUser = JsonSerializer.Deserialize<User>(currentUserInFile);
-                    if (fullUser.UserName == user.UserName && fullUser.Password == user.Password)
-                        return fullUser;
-                }
-            }
-            return null;
+            _context = webApiShop_329084941Context;
         }
-
+        public async Task<User> Login(LoginUser user)
+        {
+            // Corrected the syntax for querying the database
+            return await _context.Users.FirstOrDefaultAsync(u => u.UserName == user.UserName && u.Password == user.Password);
+        }
     }
 }
