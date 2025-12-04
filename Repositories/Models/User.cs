@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Entities;
+namespace Repositories.Models;
 
 public partial class User
 {

@@ -11,8 +11,7 @@ namespace WebApiShop.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IUserService _userService;
-        private readonly IPasswordService _passwordService;
+        IUserService _userService;
 
         public UsersController(IUserService userService, IPasswordService passwordService)
         {
@@ -30,9 +29,9 @@ namespace WebApiShop.Controllers
 
         // GET api/<UsersController>/5
         [HttpGet("{id}")]
-        public ActionResult<User> Get(int id)
+        public async Task<ActionResult<User>> Get(int id)
         {
-            User user = _userService.getUserById(id);
+            User user = await _userService.getUserById(id);
             if(user == null)
                 return NotFound();
             return Ok(user);
@@ -40,13 +39,9 @@ namespace WebApiShop.Controllers
         
         // POST api/<UsersController>
         [HttpPost]
-        public ActionResult<User> POST([FromBody] User user)
+        public async  Task<ActionResult<User>> POST([FromBody] User user)
         {
-            int passwordScore = _passwordService.getStrengthByPassword(user.Password).Strength;
-            if (passwordScore < 2)
-                return BadRequest($"Password too weak (score: {passwordScore}/4). Minimum required: 2");
-
-            user = _userService.addUser(user);
+            user = await _userService.addUser(user);
             if (user == null)
                 return BadRequest("Failed to create user");
             return CreatedAtAction(nameof(Get), new {user.Id }, user);
@@ -54,14 +49,14 @@ namespace WebApiShop.Controllers
 
         // PUT api/<UsersController>/5
         [HttpPut("{id}")]
-        public ActionResult<User> PUT([FromBody] User userToUpdate,int id)
+        public async Task<ActionResult<User>> PUT([FromBody] User userToUpdate,int id)
         {
             int passwordScore = _passwordService.getStrengthByPassword(userToUpdate.Password).Strength;
             if (passwordScore < 2)
                 return BadRequest($"Password too weak (score: {passwordScore}/4). Minimum required: 2");
 
             userToUpdate.Id = id;
-            userToUpdate = _userService.UpdateUser(userToUpdate);
+            userToUpdate = await _userService.UpdateUser(userToUpdate);
             if (userToUpdate == null)
                 return BadRequest("Failed to update user");
             else
