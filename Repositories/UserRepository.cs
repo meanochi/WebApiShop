@@ -20,7 +20,10 @@ namespace Repositories
         {
            await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
-            return user;
+            if (getUserById(user.Id) != null)
+                return user;
+            else
+                return null;
 
         }
 
@@ -29,6 +32,7 @@ namespace Repositories
             _context.Users.Update(userToUpdate);
             await _context.SaveChangesAsync();
             return userToUpdate;
+
         }
     }
 }

@@ -1,56 +1,41 @@
 ﻿using Entities;
 using Microsoft.AspNetCore.Mvc;
-using Services;
-using System.Text.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WebApiShop.Controllers
 {
-   
     [Route("api/[controller]")]
     [ApiController]
-    public class LoginController : ControllerBase
+    public class OrderItemController : ControllerBase
     {
-        ILoginService _loginService;
-
-        public LoginController(ILoginService loginService)
-        {
-            _loginService = loginService;
-        }
-
-        //// GET: api/<LoginController>
+        //// GET: api/<OrderItemController>
         //[HttpGet]
         //public IEnumerable<string> Get()
         //{
         //    return new string[] { "value1", "value2" };
         //}
 
-
-        //// GET api/<LoginController>/5
+        //// GET api/<OrderItemController>/5
         //[HttpGet("{id}")]
         //public string Get(int id)
         //{
         //    return "value";
         //}
 
-        // POST api/<LoginController>
+        // POST api/<OrderItemController>
         [HttpPost]
-        public async Task<ActionResult<User>> GetLogin([FromBody] LoginUser loginUser)
+        public void Post([FromBody] OrderItem value)
         {
-            User user = await _loginService.Login(loginUser);
-            if (user == null)
-                return NoContent();
-            return Ok(user);
         }
 
-        //// PUT api/<LoginController>/5
+        //// PUT api/<OrderItemController>/5
         //[HttpPut("{id}")]
         //public void Put(int id, [FromBody] string value)
         //{
         //}
 
-        //// DELETE api/<LoginController>/5
+        //// DELETE api/<OrderItemController>/5
         //[HttpDelete("{id}")]
         //public void Delete(int id)
         //{

@@ -19,12 +19,12 @@ namespace WebApiShop.Controllers
         }
 
 
-        // GET: api/<UsersController>
-        [HttpGet]
-        public string Get()
-        {
-            return "value";
-        }
+        //// GET: api/<UsersController>
+        //[HttpGet]
+        //public string Get()
+        //{
+        //    return "value";
+        //}
 
         // GET api/<UsersController>/5
         [HttpGet("{id}")]
@@ -60,10 +60,10 @@ namespace WebApiShop.Controllers
 
         }
 
-        // DELETE api/<UsersController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        //// DELETE api/<UsersController>/5
+        //[HttpDelete("{id}")]
+        //public void Delete(int id)
+        //{
+        //}
     }
 }
