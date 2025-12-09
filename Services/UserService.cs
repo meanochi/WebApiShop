@@ -6,32 +6,32 @@ namespace Services
 {
     public class UserService : IUserService
     {
-        IPasswordService _passService;
-        IUserRepository _repository;
+        private IPasswordService _passwordService;
+        private IUserRepository _userRepository;
 
-        public UserService(IPasswordService passService, IUserRepository repository)
+        public UserService(IPasswordService passwordService, IUserRepository userRepository)
         {
-            _passService = passService;
-            _repository = repository;
+            _passwordService = passwordService;
+            _userRepository = userRepository;
         }
 
-        public async Task<User> getUserById(int id)
+        public async Task<User> GetUserById(int id)
         {
-            return await _repository.getUserById(id);
+            return await _userRepository.GetUserById(id);
         }
 
-        public async Task<User?> addUser(User user)
+        public async Task<User?> AddUser(User user)
         {
-            if (_passService.getStrengthByPassword(user.Password).Strength < 2)
+            if (_passwordService.GetStrengthByPassword(user.Password).Strength < 2)
                 return null;
-            return await _repository.addUser(user);
+            return await _userRepository.AddUser(user);
         }
 
         public async Task<User?> UpdateUser(User userToUpdate)
         {
-            if (_passService.getStrengthByPassword(userToUpdate.Password).Strength < 2)
+            if (_passwordService.GetStrengthByPassword(userToUpdate.Password).Strength < 2)
                 return null;
-            await _repository.UpdateUser(userToUpdate);
+            await _userRepository.UpdateUser(userToUpdate);
             return userToUpdate;
         }
 
