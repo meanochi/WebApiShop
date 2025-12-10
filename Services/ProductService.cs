@@ -1,4 +1,5 @@
-﻿using Entities;
+﻿using AutoMapper;
+using Entities;
 using Repositories;
 using System;
 using System.Collections.Generic;
@@ -11,10 +12,12 @@ namespace Services
     public class ProductService : IProductService
     {
         IProductRepository _repository;
+        IMapper _mapper;
 
-        public ProductService(IProductRepository repository)
+        public ProductService(IProductRepository repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
         public async Task<List<Product>> getAllProducts()
         {

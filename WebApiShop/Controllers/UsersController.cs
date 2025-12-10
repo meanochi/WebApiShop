@@ -1,6 +1,8 @@
-﻿using Entities;
-using Services;
+﻿using AutoMapper;
+using DTOs;
+using Entities;
 using Microsoft.AspNetCore.Mvc;
+using Services;
 using System.Text.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -12,10 +14,11 @@ namespace WebApiShop.Controllers
     public class UsersController : ControllerBase
     {
         IUserService _userService;
-
-        public UsersController(IUserService userService)
+        IMapper _mapper;
+        public UsersController(IUserService userService, IMapper mapper)
         {
             _userService = userService;
+            _mapper = mapper;
         }
 
 
@@ -31,9 +34,10 @@ namespace WebApiShop.Controllers
         public async Task<ActionResult<User>> Get(int id)
         {
             User user = await _userService.getUserById(id);
+            UserDTO userDTO = _mapper.Map<User, UserDTO>(user);
             if(user == null)
                 return NoContent();
-            return Ok(user);
+            return Ok(userDTO);
         }
         
         // POST api/<UsersController>
