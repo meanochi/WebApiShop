@@ -8,11 +8,21 @@ namespace Entities;
 
 public partial class WebApiShop_329084941Context : DbContext
 {
+    public WebApiShop_329084941Context()
+    {
+    }
     public WebApiShop_329084941Context(DbContextOptions<WebApiShop_329084941Context> options)
         : base(options)
     {
     }
-
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            // 🚨 ודא ששורה זו קיימת!
+            optionsBuilder.UseSqlServer("Data Source=michal;Initial Catalog=WebApiShop_329084941;Integrated Security=True;Pooling=False;Trust Server Certificate=True;MultipleActiveResultSets=true");
+        }
+    }
     public virtual DbSet<Category> Categories { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }

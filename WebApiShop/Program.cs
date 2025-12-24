@@ -20,7 +20,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddDbContext<WebApiShop_329084941Context>(option=>option.UseSqlServer(
-    "Data Source=srv2\\pupils;Initial Catalog=WebApiShop_329084941;Integrated Security=True;Pooling=False;Trust Server Certificate=True;"
+    "Data Source=michal;Initial Catalog=WebApiShop_329084941;Integrated Security=True;Pooling=False;Trust Server Certificate=True;"
     ));
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
