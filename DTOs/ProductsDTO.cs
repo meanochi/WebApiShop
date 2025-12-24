@@ -12,9 +12,10 @@ namespace DTOs
     string ProductName,
 
     double? Price,
-
+    
     string Description,
 
     string CategoryName
+
 );
 }

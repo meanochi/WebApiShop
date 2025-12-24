@@ -24,11 +24,10 @@ namespace WebApiShop.Controllers
 
         // GET: api/<CategoryController>
         [HttpGet]
-        public async Task<ActionResult<List<Category>>> Get()
+        public async Task<ActionResult<List<CategoryDTO>>> Get()
         {
-            List<Category> categories = await _service.getAllCategories();
-            List<CategoryDTO> categoriesDTO = _mapper.Map<List<Category>, List<CategoryDTO>>(categories);
-            return Ok(categoriesDTO);
+            List<CategoryDTO> categories = await _service.getAllCategories();
+            return Ok(categories);
         }
 
         //// GET api/<CategoryController>/5
