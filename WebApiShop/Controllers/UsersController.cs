@@ -31,13 +31,12 @@ namespace WebApiShop.Controllers
 
         // GET api/<UsersController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> Get(int id)
+        public async Task<ActionResult<UserDTO>> Get(int id)
         {
-            User user = await _userService.getUserById(id);
-            UserDTO userDTO = _mapper.Map<User, UserDTO>(user);
+            UserDTO user = await _userService.getUserById(id);
             if(user == null)
                 return NoContent();
-            return Ok(userDTO);
+            return Ok(user);
         }
         
         // POST api/<UsersController>

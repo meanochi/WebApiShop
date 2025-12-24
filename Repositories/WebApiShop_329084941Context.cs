@@ -106,7 +106,7 @@ public partial class WebApiShop_329084941Context : DbContext
                 .IsFixedLength()
                 .HasColumnName("password");
             entity.Property(e => e.UserName)
-                .HasMaxLength(10)
+                .HasMaxLength(20)
                 .IsFixedLength()
                 .HasColumnName("user_name");
         });

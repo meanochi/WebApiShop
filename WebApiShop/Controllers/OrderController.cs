@@ -13,12 +13,10 @@ namespace WebApiShop.Controllers
     public class OrderController : ControllerBase
     {
         IOrderService _service;
-        IMapper _mapper;
 
-        public OrderController(IOrderService service, IMapper mapper)
+        public OrderController(IOrderService service)
         {
             _service = service;
-            _mapper = mapper;
         }
 
         //// GET: api/<OrderController>
@@ -30,23 +28,22 @@ namespace WebApiShop.Controllers
 
         // GET api/<OrderController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Order>> Get(int id)
+        public async Task<ActionResult<OrdersDTO>> Get(int id)
         {
-            Order order = await _service.getOrderById(id);
-            OrdersDTO orederDTO = _mapper.Map<Order, OrdersDTO>(order);
-            return Ok(orederDTO);
+            OrdersDTO order = await _service.getOrderById(id);
+            return Ok(order);
         }
 
         // POST api/<OrderController>
         [HttpPost]
-        public async Task<ActionResult<Order>> Post([FromBody] OrdersDTO orderDTO)
+        public async Task<ActionResult<OrdersDTO>> Post([FromBody] OrdersDTO orderDTO)
         {
-            Order order = _mapper.Map<OrdersDTO, Order>(orderDTO);
-            order = await _service.addOrder(order);
+            
+            orderDTO = await _service.addOrder(orderDTO);
             //OrdersDTO orederDTO = _mapper.Map<Order, OrdersDTO>(order);
-            if (order == null)
+            if (orderDTO == null)
                 return BadRequest();
-            return CreatedAtAction(nameof(Get), new { order.OrderId }, order);
+            return CreatedAtAction(nameof(Get), new { orderDTO.OrderId }, orderDTO);
 
         }
 

@@ -1,4 +1,6 @@
-﻿using Entities;
+﻿using AutoMapper;
+using DTOs;
+using Entities;
 using Repositories;
 using System.Text.Json;
 using Zxcvbn;
@@ -8,16 +10,19 @@ namespace Services
     {
         IPasswordService _passService;
         IUserRepository _repository;
-
-        public UserService(IPasswordService passService, IUserRepository repository)
+        IMapper _mapper;
+        public UserService(IPasswordService passService, IUserRepository repository, IMapper mapper)
         {
             _passService = passService;
             _repository = repository;
+            _mapper = mapper;
         }
 
-        public async Task<User> getUserById(int id)
+        public async Task<UserDTO> getUserById(int id)
         {
-            return await _repository.getUserById(id);
+            User user = await _repository.getUserById(id);
+            UserDTO userDTO = _mapper.Map<User, UserDTO>(user);
+            return userDTO;
         }
 
         public async Task<User?> addUser(User user)

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DTOs;
 using Entities;
 using Repositories;
 using System;
@@ -19,9 +20,11 @@ namespace Services
             _repository = repository;
             _mapper = mapper;
         }
-        public async Task<List<Product>> getAllProducts()
+        public async Task<List<ProductsDTO>> getAllProducts()
         {
-            return await _repository.getAllProducts();
+            List<Product> products = await _repository.getAllProducts();
+            List<ProductsDTO> productsDTO = _mapper.Map<List<Product>, List<ProductsDTO>>(products);
+            return productsDTO;
         }
     }
 }
