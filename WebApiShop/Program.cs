@@ -1,5 +1,6 @@
 ﻿using Entities;
 using Microsoft.EntityFrameworkCore;
+using NLog.Web;
 using Repositories;
 using Services;
 
@@ -23,6 +24,7 @@ builder.Services.AddDbContext<WebApiShop_329084941Context>(option=>option.UseSql
     "Data Source=srv2\\pupils;Initial Catalog=WebApiShop_329084941;Integrated Security=True;Pooling=False;Trust Server Certificate=True;"
     ));
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Host.UseNLog();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
@@ -33,7 +35,6 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/openapi/v1.json", "My API V1");
     });
 }
-
 // Configure the HTTP request pipeline.
 
 app.UseHttpsRedirection();
