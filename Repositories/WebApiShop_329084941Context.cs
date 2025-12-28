@@ -13,6 +13,10 @@ public partial class WebApiShop_329084941Context : DbContext
     {
     }
 
+    public WebApiShop_329084941Context()
+    {
+    }
+
     public virtual DbSet<Category> Categories { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
@@ -106,7 +110,7 @@ public partial class WebApiShop_329084941Context : DbContext
                 .IsFixedLength()
                 .HasColumnName("password");
             entity.Property(e => e.UserName)
-                .HasMaxLength(20)
+                .HasMaxLength(30)
                 .IsFixedLength()
                 .HasColumnName("user_name");
         });

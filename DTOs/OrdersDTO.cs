@@ -15,9 +15,11 @@ namespace DTOs
 
      double? OrderSum,
 
-     int UserId//,
+     int UserId,
 
-    // string UserName
+     ICollection<OrderItemDTO> OrderItems,
+
+    string UserUserName
 
  );
 

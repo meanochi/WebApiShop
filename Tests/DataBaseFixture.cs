@@ -1,12 +1,8 @@
-﻿using Entities;
+using Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Repositories;
 
-namespace TestProject
+namespace Tests
 {
     public class DatabaseFixture : IDisposable
     {
@@ -14,36 +10,19 @@ namespace TestProject
 
         public DatabaseFixture()
         {
-            
+
             // Set up the test database connection and initialize the context
             var options = new DbContextOptionsBuilder<WebApiShop_329084941Context>()
-                
-                .UseSqlServer("Server=srv2\\pupils;Database=Tests;Trusted_Connection=True;TrustServerCertificate=True;")
+                .UseSqlServer("Data Source=srv2\\pupils;Initial Catalog=WebApiShop_329084941;Integrated Security=True;Pooling=False;Trust Server Certificate=True;")
                 .Options;
             Context = new WebApiShop_329084941Context(options);
             Context.Database.EnsureCreated();
-            SeedData();
-        }
-
-        private void SeedData()
-        {
-            // הוספת נתונים לדוגמה למסד הנתונים
-            if (!Context.Users.Any())
-            {
-                Context.Users.Add(new User
-                {
-                    UserName = "JohnDoe",
-                    FirstName = "John",
-                    LastName = "Doe",
-                    Password = "password123"
-                });
-                Context.SaveChanges();
-            }
         }
 
         public void Dispose()
         {
-            // מבצע ניקוי של החיבורים לאחר סיום הטסטים
+            // Clean up the test database after all tests are completed
+            Context.Database.EnsureDeleted();
             Context.Dispose();
         }
     }

@@ -25,7 +25,7 @@ namespace Repositories
         }
         public async Task<Order> getOrderById(int id)
         {
-            return await _context.Orders.FindAsync(id);
+            return await _context.Orders.FirstOrDefaultAsync(o=>o.OrderId == id);
         }
         public async Task<Order> addOrder(Order order)
         {

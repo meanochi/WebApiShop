@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
 namespace Repositories
@@ -12,8 +13,7 @@ namespace Repositories
         }
         public async Task<User> getUserById(int id)
         {
-            return await _context.Users.FindAsync(id);
-
+            return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
         }
 
         public async Task<User> addUser(User user)
