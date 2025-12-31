@@ -23,7 +23,7 @@ namespace WebApiShop.Controllers
 
         // GET: api/<ProductController>
         [HttpGet]
-        public async Task<ActionResult<List<ProductsDTO>>> Get()
+        public async Task<ActionResult<List<ProductsDTO>>> Get(int? position, int? skip, int? maxPrice, int?minPrice, string? order)
         {
             List<ProductsDTO> products = await _service.getAllProducts();
             return Ok(products);
