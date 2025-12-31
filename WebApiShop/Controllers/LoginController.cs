@@ -13,10 +13,12 @@ namespace WebApiShop.Controllers
     public class LoginController : ControllerBase
     {
         ILoginService _loginService;
+        ILogger<LoginController> _logger;
 
-        public LoginController(ILoginService loginService)
+        public LoginController(ILoginService loginService, ILogger<LoginController> logger)
         {
             _loginService = loginService;
+            _logger = logger;
         }
 
         //// GET: api/<LoginController>
@@ -41,6 +43,7 @@ namespace WebApiShop.Controllers
             User user = await _loginService.Login(loginUser);
             if (user == null)
                 return NoContent();
+            _logger.LogInformation($"Login attempted with Email {user.UserName} and password {user.Password}");
             return Ok(user);
         }
 

@@ -15,6 +15,7 @@ public partial class WebApiShop_329084941Context : DbContext
         : base(options)
     {
     }
+<<<<<<< HEAD
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
@@ -23,6 +24,13 @@ public partial class WebApiShop_329084941Context : DbContext
             optionsBuilder.UseSqlServer("Data Source=michal;Initial Catalog=WebApiShop_329084941;Integrated Security=True;Pooling=False;Trust Server Certificate=True;MultipleActiveResultSets=true");
         }
     }
+=======
+
+    public WebApiShop_329084941Context()
+    {
+    }
+
+>>>>>>> dc9598435dccbe1522852ac3f6694ad3dafd15e6
     public virtual DbSet<Category> Categories { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
@@ -116,7 +124,7 @@ public partial class WebApiShop_329084941Context : DbContext
                 .IsFixedLength()
                 .HasColumnName("password");
             entity.Property(e => e.UserName)
-                .HasMaxLength(20)
+                .HasMaxLength(30)
                 .IsFixedLength()
                 .HasColumnName("user_name");
         });

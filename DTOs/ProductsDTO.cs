@@ -15,7 +15,7 @@ namespace DTOs
     
     string Description,
 
-    string CategoryName
+    string CategoryCategoryName
 
 );
 }
