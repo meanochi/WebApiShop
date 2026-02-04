@@ -8,9 +8,10 @@ namespace Services
 {
     public class UserService : IUserService
     {
-        IPasswordService _passService;
-        IUserRepository _repository;
-        IMapper _mapper;
+        private readonly IPasswordService _passService;
+        private readonly IUserRepository _repository;
+        private readonly IMapper _mapper;
+        
         public UserService(IPasswordService passService, IUserRepository repository, IMapper mapper)
         {
             _passService = passService;

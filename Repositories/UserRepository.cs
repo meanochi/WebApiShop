@@ -6,7 +6,8 @@ namespace Repositories
 {
     public class UserRepository : IUserRepository
     {
-        WebApiShop_329084941Context _context;
+        private readonly WebApiShop_329084941Context _context;
+        
         public UserRepository(WebApiShop_329084941Context webApiShop_329084941Context)
         {
             _context = webApiShop_329084941Context;

@@ -10,7 +10,8 @@ namespace Repositories
 {
     public class CategoryRepository : ICategoryRepository
     {
-        WebApiShop_329084941Context _context;
+        private readonly WebApiShop_329084941Context _context;
+        
         public CategoryRepository(WebApiShop_329084941Context webApiShop_329084941Context)
         {
             _context = webApiShop_329084941Context;

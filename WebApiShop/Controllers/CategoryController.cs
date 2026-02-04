@@ -13,8 +13,8 @@ namespace WebApiShop.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        ICategoryService _service;
-        IMapper _mapper;
+        private readonly ICategoryService _service;
+        private readonly IMapper _mapper;
 
         public CategoryController(ICategoryService service, IMapper mapper)
         {
@@ -29,30 +29,5 @@ namespace WebApiShop.Controllers
             List<CategoryDTO> categories = await _service.getAllCategories();
             return Ok(categories);
         }
-
-        //// GET api/<CategoryController>/5
-        //[HttpGet("{id}")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
-
-        //// POST api/<CategoryController>
-        //[HttpPost]
-        //public void Post([FromBody] string value)
-        //{
-        //}
-
-        //// PUT api/<CategoryController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
-
-        //// DELETE api/<CategoryController>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
     }
 }
