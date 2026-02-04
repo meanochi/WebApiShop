@@ -12,15 +12,16 @@ namespace Services
 {
     public class ProductService : IProductService
     {
-        IProductRepository _repository;
-        IMapper _mapper;
+        private readonly IProductRepository _repository;
+        private readonly IMapper _mapper;
 
         public ProductService(IProductRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
         }
-        public async Task<List<ProductsDTO>> getAllProducts(int? position, int? skip, int? maxPrice, int? minPrice, string? order)
+        
+        public async Task<List<ProductsDTO>> getAllProducts()
         {
             List<Product> products = await _repository.getAllProducts();
             List<ProductsDTO> productsDTO = _mapper.Map<List<Product>, List<ProductsDTO>>(products);

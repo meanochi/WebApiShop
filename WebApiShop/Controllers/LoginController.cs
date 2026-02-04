@@ -7,34 +7,18 @@ using System.Text.Json;
 
 namespace WebApiShop.Controllers
 {
-   
     [Route("api/[controller]")]
     [ApiController]
     public class LoginController : ControllerBase
     {
-        ILoginService _loginService;
-        ILogger<LoginController> _logger;
+        private readonly ILoginService _loginService;
+        private readonly ILogger<LoginController> _logger;
 
         public LoginController(ILoginService loginService, ILogger<LoginController> logger)
         {
             _loginService = loginService;
             _logger = logger;
         }
-
-        //// GET: api/<LoginController>
-        //[HttpGet]
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
-
-
-        //// GET api/<LoginController>/5
-        //[HttpGet("{id}")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
 
         // POST api/<LoginController>
         [HttpPost]
@@ -46,17 +30,5 @@ namespace WebApiShop.Controllers
             _logger.LogInformation($"Login attempted with Email {user.UserName} and password {user.Password}");
             return Ok(user);
         }
-
-        //// PUT api/<LoginController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
-
-        //// DELETE api/<LoginController>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
     }
 }

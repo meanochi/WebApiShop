@@ -13,21 +13,14 @@ namespace WebApiShop.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        IUserService _userService;
-        IMapper _mapper;
+        private readonly IUserService _userService;
+        private readonly IMapper _mapper;
+        
         public UsersController(IUserService userService, IMapper mapper)
         {
             _userService = userService;
             _mapper = mapper;
         }
-
-
-        //// GET: api/<UsersController>
-        //[HttpGet]
-        //public string Get()
-        //{
-        //    return "value";
-        //}
 
         // GET api/<UsersController>/5
         [HttpGet("{id}")]
@@ -41,7 +34,7 @@ namespace WebApiShop.Controllers
         
         // POST api/<UsersController>
         [HttpPost]
-        public async  Task<ActionResult<User>> POST([FromBody] User user)
+        public async Task<ActionResult<User>> POST([FromBody] User user)
         {
             user = await _userService.addUser(user);
             if (user == null)
@@ -51,7 +44,7 @@ namespace WebApiShop.Controllers
 
         // PUT api/<UsersController>/5
         [HttpPut("{id}")]
-        public async Task<ActionResult<User>> PUT([FromBody] User userToUpdate,int id)
+        public async Task<ActionResult<User>> PUT([FromBody] User userToUpdate, int id)
         {
             userToUpdate.Id = id;
             userToUpdate = await _userService.UpdateUser(userToUpdate);
@@ -59,14 +52,6 @@ namespace WebApiShop.Controllers
                 return BadRequest("Password is too weak");
             else
                 return Ok(userToUpdate);
-
-
         }
-
-        //// DELETE api/<UsersController>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
     }
 }
