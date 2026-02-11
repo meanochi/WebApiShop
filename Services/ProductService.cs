@@ -22,7 +22,7 @@ namespace Services
         }
         public async Task<List<ProductsDTO>> getAllProducts(int? position, int? skip, int? maxPrice, int? minPrice, string? order)
         {
-            List<Product> products = await _repository.getAllProducts();
+            List<Product> products = await _repository.getAllProducts(position, skip, maxPrice, minPrice, order);
             List<ProductsDTO> productsDTO = _mapper.Map<List<Product>, List<ProductsDTO>>(products);
             return productsDTO;
         }

@@ -25,7 +25,7 @@ namespace WebApiShop.Controllers
         [HttpGet]
         public async Task<ActionResult<List<ProductsDTO>>> Get(int? position, int? skip, int? maxPrice, int?minPrice, string? order)
         {
-            List<ProductsDTO> products = await _service.getAllProducts();
+            List<ProductsDTO> products = await _service.getAllProducts(position, skip, maxPrice, minPrice, order);
             return Ok(products);
         }
 
