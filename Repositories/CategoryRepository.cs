@@ -10,10 +10,10 @@ namespace Repositories
 {
     public class CategoryRepository : ICategoryRepository
     {
-        WebApiShop_329084941Context _context;
-        public CategoryRepository(WebApiShop_329084941Context webApiShop_329084941Context)
+        ShowsCenterContext _context;
+        public CategoryRepository(ShowsCenterContext ShowsCenterContext)
         {
-            _context = webApiShop_329084941Context;
+            _context = ShowsCenterContext;
         }
         public async Task<List<Category>> getAllCategories()
         {

@@ -5,17 +5,15 @@ using System.Collections.Generic;
 
 namespace Entities;
 
-public partial class Order
+public partial class Section
 {
     public int Id { get; set; }
 
-    public DateTime OrderDate { get; set; }
+    public decimal? Price { get; set; }
 
-    public int UserId { get; set; }
-
-    public double Price { get; set; }
+    public int ShowId { get; set; }
 
     public virtual ICollection<OrderedSeat> OrderedSeats { get; set; } = new List<OrderedSeat>();
 
-    public virtual User User { get; set; }
+    public virtual Show Show { get; set; }
 }

@@ -9,7 +9,7 @@ namespace Tests
 {
     public class UserRepositoryIntegrationTests : IClassFixture<DatabaseFixture>, IDisposable, IAsyncLifetime
     {
-        private readonly WebApiShop_329084941Context _context;
+        private readonly ShowsCenterContext _context;
         private readonly UserRepository _repository;
         private readonly DatabaseFixture _fixture;
 

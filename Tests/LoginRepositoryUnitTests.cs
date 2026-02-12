@@ -13,12 +13,12 @@ namespace Test
 {
     public class LoginRepositoryUnitTests : IAsyncLifetime, IDisposable
     {
-        private Mock<WebApiShop_329084941Context> _mockContext = null!;
+        private Mock<ShowsCenterContext> _mockContext = null!;
         private LoginRepository _repo = null!;
 
-        private Mock<WebApiShop_329084941Context> GetMockContext<T>(List<T> data, Expression<Func<WebApiShop_329084941Context, DbSet<T>>> dbSetSelector) where T : class
+        private Mock<ShowsCenterContext> GetMockContext<T>(List<T> data, Expression<Func<ShowsCenterContext, DbSet<T>>> dbSetSelector) where T : class
         {
-            var mockContext = new Mock<WebApiShop_329084941Context>();
+            var mockContext = new Mock<ShowsCenterContext>();
             mockContext.Setup(dbSetSelector).ReturnsDbSet(data);
             return mockContext;
         }

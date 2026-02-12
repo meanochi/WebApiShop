@@ -1,14 +1,8 @@
-﻿using Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Entities;
+using System.Collections;
+using System.ComponentModel.DataAnnotations;
 
 namespace DTOs
 {
-    public record CategoryDTO
-(
-    string CategoryName
- );
+    public record CategoryDTO(string Name);
 }

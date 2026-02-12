@@ -17,17 +17,17 @@ namespace Test
     public class UserRepositoryUnitTesting : IAsyncLifetime
     {
         /// <summary>
-        /// оъегъ тжш вршйъ мйцйшъ Mock щм д-Context
+        /// пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ Mock пїЅпїЅ пїЅ-Context
         /// </summary>
-        private Mock<WebApiShop_329084941Context> GetMockContext<T>(List<T> data, Expression<Func<WebApiShop_329084941Context, DbSet<T>>> dbSetSelector) where T : class
+        private Mock<ShowsCenterContext> GetMockContext<T>(List<T> data, Expression<Func<ShowsCenterContext, DbSet<T>>> dbSetSelector) where T : class
         {
-            var mockContext = new Mock<WebApiShop_329084941Context>();
+            var mockContext = new Mock<ShowsCenterContext>();
             mockContext.Setup(dbSetSelector).ReturnsDbSet(data);
             return mockContext;
         }
 
         // Optional shared fixtures for tests (tear-up/tear-down)
-        private Mock<WebApiShop_329084941Context>? _sharedMockContext;
+        private Mock<ShowsCenterContext>? _sharedMockContext;
         private UserRepository? _sharedRepo;
         private List<User>? _sharedUsers;
 
@@ -91,7 +91,7 @@ namespace Test
         //    var mockContext = GetMockContext(users, x => x.Users);
         //    var repo = new UserRepository(mockContext.Object);
 
-        //    // бгйчд дан доййм ъфес тм йгй ойщде азш. олйееп щжд аеъе ID, ма аоешд мдйеъ дървщеъ.
+        //    // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ ID, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
         //    var result = await repo.GetByUserNameAsync("test@test.com", 1);
 
         //    Assert.Null(result);
@@ -141,8 +141,8 @@ namespace Test
         //public async Task GetAllOrdersAsync_ReturnsOnlySpecificUserOrders()
         //{
         //    var orders = new List<Order> {
-        //        new Order { OrderId = 1, UserId = 10 },
-        //        new Order { OrderId = 2, UserId = 20 }
+        //        new Order { Id = 1, UserId = 10 },
+        //        new Order { Id = 2, UserId = 20 }
         //    };
         //    var mockContext = GetMockContext(orders, x => x.Orders);
         //    var repo = new UserRepository(mockContext.Object);
@@ -175,7 +175,7 @@ namespace Test
         //    var mockContext = GetMockContext(users, x => x.Users);
         //    var repo = new UserRepository(mockContext.Object);
 
-        //    // ощъощ тн ID 2 бегч ан доййм ъфес тм йгй ойщде азш (едеа алп ъфес тм йгй ID 1)
+        //    // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ ID 2 пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ (пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅ ID 1)
         //    var result = await repo.GetByUserNameAsync("taken@test.com", 2);
 
         //    Assert.NotNull(result);

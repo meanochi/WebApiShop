@@ -3,15 +3,15 @@
    "ContextClassName": "ShowsCenterContext",
    "ContextNamespace": null,
    "FilterSchemas": false,
-   "IncludeConnectionString": false,
+   "IncludeConnectionString": true,
    "IrregularWords": null,
-   "MinimumProductVersion": "2.6.1248",
+   "MinimumProductVersion": "2.6.1301",
    "ModelNamespace": null,
    "OutputContextPath": null,
    "OutputPath": "Models",
    "PluralRules": null,
    "PreserveCasingWithRegex": true,
-   "ProjectRootNamespace": "Repositories",
+   "ProjectRootNamespace": "Entities",
    "Schemas": null,
    "SelectedHandlebarsLanguage": 2,
    "SelectedToBeGenerated": 0,
@@ -23,7 +23,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Order_Item]",
+         "Name": "[dbo].[OrderedSeats]",
          "ObjectType": 0
       },
       {
@@ -31,11 +31,23 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Products]",
+         "Name": "[dbo].[Providers]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[User]",
+         "Name": "[dbo].[Sections]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Shows]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Table]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Users]",
          "ObjectType": 0
       }
    ],

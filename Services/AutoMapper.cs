@@ -12,11 +12,15 @@ namespace Services
     public class AutoMapper: Profile
     {
         public AutoMapper() {
-            CreateMap<Order, OrdersDTO>().ReverseMap();
-            CreateMap<Category, CategoryDTO>().ReverseMap();
-            CreateMap<Product, ProductsDTO>().ReverseMap();
-            CreateMap<User, UserDTO>().ReverseMap();
-            CreateMap<OrderItem, OrderItemDTO>().ReverseMap();
+            CreateMap<UserUpdateDTO, User>();
+            CreateMap<User, UserReadDTO>();
+            CreateMap<UserCreateDTO, User>();
+            CreateMap<Order, OrderDTO>();
+            CreateMap<OrderCreateDTO, Order>();
+            CreateMap<OrderItemDTO, OrderItem>();
+            CreateMap<UserLoginDTO, User>();
+
         }
     }
 }
+//michmich!!145

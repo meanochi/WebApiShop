@@ -10,7 +10,7 @@ namespace Tests
     [Collection("Integration")]
     public class LoginRepositoryIntegrationTests : IClassFixture<DatabaseFixture>, IAsyncLifetime, IDisposable
     {
-        private readonly WebApiShop_329084941Context _context;
+        private readonly ShowsCenterContext _context;
         private LoginRepository _repository = null!;
 
         public LoginRepositoryIntegrationTests(DatabaseFixture fixture)

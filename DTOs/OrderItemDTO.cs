@@ -9,9 +9,8 @@ namespace DTOs
 {
     public record OrderItemDTO(
 
-    int? Quantity,
+    int? Quantity
 
-    Product Product
         )
         ;
 }

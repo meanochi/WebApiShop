@@ -10,10 +10,10 @@ namespace Repositories
 {
     public class OrderRepository : IOrderRepository
     {
-        WebApiShop_329084941Context _context;
-        public OrderRepository(WebApiShop_329084941Context webApiShop_329084941Context)
+        ShowsCenterContext _context;
+        public OrderRepository(ShowsCenterContext ShowsCenterContext)
         {
-            _context = webApiShop_329084941Context;
+            _context = ShowsCenterContext;
         }
         public async Task<List<Order>> getAllOrders()
         {
@@ -25,13 +25,13 @@ namespace Repositories
         }
         public async Task<Order> getOrderById(int id)
         {
-            return await _context.Orders.FirstOrDefaultAsync(o=>o.OrderId == id);
+            return await _context.Orders.FirstOrDefaultAsync(o=>o.Id == id);
         }
         public async Task<Order> addOrder(Order order)
         {
             await _context.Orders.AddAsync(order);
             await _context.SaveChangesAsync();
-            if (getOrderById(order.OrderId) != null)
+            if (getOrderById(order.Id) != null)
                 return order;
             else
                 return null;

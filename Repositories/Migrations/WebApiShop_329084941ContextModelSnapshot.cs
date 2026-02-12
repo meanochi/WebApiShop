@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Repositories.Migrations
 {
-    [DbContext(typeof(WebApiShop_329084941Context))]
-    partial class WebApiShop_329084941ContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(ShowsCenterContext))]
+    partial class ShowsCenterContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -45,12 +45,12 @@ namespace Repositories.Migrations
 
             modelBuilder.Entity("Entities.Order", b =>
                 {
-                    b.Property<int>("OrderId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("order_id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateOnly?>("OrderDate")
                         .HasColumnType("date")
@@ -64,7 +64,7 @@ namespace Repositories.Migrations
                         .HasColumnType("int")
                         .HasColumnName("user_id");
 
-                    b.HasKey("OrderId");
+                    b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
@@ -80,7 +80,7 @@ namespace Repositories.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderItemId"));
 
-                    b.Property<int?>("OrderId")
+                    b.Property<int?>("Id")
                         .HasColumnType("int")
                         .HasColumnName("order_id");
 
@@ -94,7 +94,7 @@ namespace Repositories.Migrations
 
                     b.HasKey("OrderItemId");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("Id");
 
                     b.HasIndex("ProductId");
 
@@ -191,7 +191,7 @@ namespace Repositories.Migrations
                 {
                     b.HasOne("Entities.Order", "Order")
                         .WithMany("OrderItems")
-                        .HasForeignKey("OrderId")
+                        .HasForeignKey("Id")
                         .HasConstraintName("FK_Order_Item_Orders");
 
                     b.HasOne("Entities.Product", "Product")

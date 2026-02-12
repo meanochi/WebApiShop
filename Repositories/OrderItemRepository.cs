@@ -9,10 +9,10 @@ namespace Repositories
 {
     public class OrderItemRepository
     {
-        WebApiShop_329084941Context _context;
-        public OrderItemRepository(WebApiShop_329084941Context webApiShop_329084941Context)
+        ShowsCenterContext _context;
+        public OrderItemRepository(ShowsCenterContext ShowsCenterContext)
         {
-            _context = webApiShop_329084941Context;
+            _context = ShowsCenterContext;
         }
 
 

@@ -9,7 +9,7 @@ namespace Tests
 {
     public class OrderRepositoryIntegrationTests : IClassFixture<DatabaseFixture>, IDisposable, IAsyncLifetime
     {
-        private readonly WebApiShop_329084941Context _context;
+        private readonly ShowsCenterContext _context;
         private readonly OrderRepository _repository;
         private readonly DatabaseFixture _fixture;
 
@@ -47,7 +47,7 @@ namespace Tests
             var result = await _repository.addOrder(order);
 
             // Assert
-            var inDb = await _context.Orders.FindAsync(result.OrderId);
+            var inDb = await _context.Orders.FindAsync(result.Id);
             Assert.NotNull(inDb);
             Assert.Equal(15.0, inDb.OrderSum);
         }
@@ -75,10 +75,10 @@ namespace Tests
 
             // Act
             order.OrderSum = 25.0;
-            var updated = await _repository.updateOrder(order, order.OrderId);
+            var updated = await _repository.updateOrder(order, order.Id);
 
             // Assert
-            var inDb = await _context.Orders.FindAsync(order.OrderId);
+            var inDb = await _context.Orders.FindAsync(order.Id);
             Assert.Equal(25.0, inDb.OrderSum);
         }
 

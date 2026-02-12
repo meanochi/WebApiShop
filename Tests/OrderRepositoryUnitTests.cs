@@ -14,12 +14,12 @@ namespace Test
 {
     public class OrderRepositoryUnitTests : IAsyncLifetime, IDisposable
     {
-        private Mock<WebApiShop_329084941Context> _mockContext;
+        private Mock<ShowsCenterContext> _mockContext;
         private OrderRepository _repo;
 
-        private Mock<WebApiShop_329084941Context> GetMockContext<T>(List<T> data, Expression<Func<WebApiShop_329084941Context, DbSet<T>>> dbSetSelector) where T : class
+        private Mock<ShowsCenterContext> GetMockContext<T>(List<T> data, Expression<Func<ShowsCenterContext, DbSet<T>>> dbSetSelector) where T : class
         {
-            var mockContext = new Mock<WebApiShop_329084941Context>();
+            var mockContext = new Mock<ShowsCenterContext>();
             mockContext.Setup(dbSetSelector).ReturnsDbSet(data);
             return mockContext;
         }
@@ -45,8 +45,8 @@ namespace Test
         {
             var orders = new List<Order>
             {
-                new Order { OrderId = 1 },
-                new Order { OrderId = 2 }
+                new Order { Id = 1 },
+                new Order { Id = 2 }
             };
             var mockContext = GetMockContext(orders, x => x.Orders);
             var repo = new OrderRepository(mockContext.Object);
@@ -61,9 +61,9 @@ namespace Test
         {
             var orders = new List<Order>
             {
-                new Order { OrderId = 1, UserId = 10 },
-                new Order { OrderId = 2, UserId = 10 },
-                new Order { OrderId = 3, UserId = 20 }
+                new Order { Id = 1, UserId = 10 },
+                new Order { Id = 2, UserId = 10 },
+                new Order { Id = 3, UserId = 20 }
             };
             var mockContext = GetMockContext(orders, x => x.Orders);
             var repo = new OrderRepository(mockContext.Object);
@@ -78,14 +78,14 @@ namespace Test
         [Fact]
         public async Task GetOrderById_ExistingId_ReturnsOrder()
         {
-            var orders = new List<Order> { new Order { OrderId = 5 } };
+            var orders = new List<Order> { new Order { Id = 5 } };
             var mockContext = GetMockContext(orders, x => x.Orders);
             var repo = new OrderRepository(mockContext.Object);
 
             var result = await repo.getOrderById(5);
 
             Assert.NotNull(result);
-            Assert.Equal(5, result.OrderId);
+            Assert.Equal(5, result.Id);
         }
 
         [Fact]
@@ -93,7 +93,7 @@ namespace Test
         {
             var mockContext = GetMockContext(new List<Order>(), x => x.Orders);
             var repo = new OrderRepository(mockContext.Object);
-            var order = new Order { OrderSum = 15.5 };
+            var order = new Order { Price = 15.5 };
 
             var result = await repo.addOrder(order);
 
@@ -104,14 +104,14 @@ namespace Test
         [Fact]
         public async Task UpdateOrder_ValidUpdate_ReturnsUpdatedOrder_AndSaves()
         {
-            var order = new Order { OrderId = 1, OrderSum = 10.0 };
+            var order = new Order { Id = 1, Price = 10.0 };
             var mockContext = GetMockContext(new List<Order> { order }, x => x.Orders);
             var repo = new OrderRepository(mockContext.Object);
 
-            order.OrderSum = 99.9;
-            var result = await repo.updateOrder(order, order.OrderId);
+            order.Price = 99.9;
+            var result = await repo.updateOrder(order, order.Id);
 
-            Assert.Equal(99.9, result.OrderSum);
+            Assert.Equal(99.9, result.Price);
             mockContext.Verify(m => m.SaveChangesAsync(default), Times.Once);
         }
 

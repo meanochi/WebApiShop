@@ -6,10 +6,10 @@ namespace Repositories
 {
     public class UserRepository : IUserRepository
     {
-        WebApiShop_329084941Context _context;
-        public UserRepository(WebApiShop_329084941Context webApiShop_329084941Context)
+        ShowsCenterContext _context;
+        public UserRepository(ShowsCenterContext ShowsCenterContext)
         {
-            _context = webApiShop_329084941Context;
+            _context = ShowsCenterContext;
         }
         public async Task<User> getUserById(int id)
         {
@@ -33,6 +33,10 @@ namespace Repositories
             await _context.SaveChangesAsync();
             return userToUpdate;
 
+        }
+        public async Task<User> Login(User user)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.EmailAddress == user.EmailAddress && u.Password == user.Password);
         }
     }
 }

@@ -5,11 +5,13 @@ using System.Collections.Generic;
 
 namespace Entities;
 
-public partial class Category
+public partial class Provider
 {
     public int Id { get; set; }
 
     public string Name { get; set; }
+
+    public string ProfileImgUrl { get; set; }
 
     public virtual ICollection<Show> Shows { get; set; } = new List<Show>();
 }
