@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DTOs;
 using Entities;
+using Microsoft.AspNetCore.Mvc;
 using Repositories;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,20 @@ namespace Services
             List<Category> categories = await _repository.getAllCategories();
             List<CategoryDTO> categoriesDTO = _mapper.Map<List<Category>, List<CategoryDTO>>(categories);
             return categoriesDTO;
+        }
+
+        public async Task<CategoryDTO> getCategoryById(int id)
+        {
+            Category category = await _repository.getCategoryById(id);
+            CategoryDTO categoryDTO = _mapper.Map<Category, CategoryDTO>(category);
+            return categoryDTO;
+
+        }
+        public async Task<Category> addCategory(CategoryDTO category)
+        {
+            Category newCategory = _mapper.Map<CategoryDTO, Category>(category);
+            newCategory =  await _repository.addCategory(newCategory);
+            return newCategory;
         }
     }
 }

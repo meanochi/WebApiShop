@@ -30,29 +30,39 @@ namespace WebApiShop.Controllers
             return Ok(categories);
         }
 
-        //// GET api/<CategoryController>/5
-        //[HttpGet("{id}")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
+        // GET api/<CategoryController>/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<CategoryDTO>> Get(int id)
+        {
+            CategoryDTO category = await _service.getCategoryById(id);
+            return Ok(category);
+        }
 
-        //// POST api/<CategoryController>
-        //[HttpPost]
-        //public void Post([FromBody] string value)
-        //{
-        //}
 
-        //// PUT api/<CategoryController>/5
+
+        // POST api/<CategoryController>
+        [HttpPost]
+        public async Task<ActionResult<Category>> Post([FromBody] CategoryDTO category)
+        {
+            Category newCategory = await _service.addCategory(category);
+            if (newCategory == null)
+                return BadRequest();
+            return CreatedAtAction(nameof(Get), new { newCategory.Id }, newCategory);
+        }
+
+        // PUT api/<CategoryController>/5
         //[HttpPut("{id}")]
         //public void Put(int id, [FromBody] string value)
         //{
+
         //}
 
-        //// DELETE api/<CategoryController>/5
+        // DELETE api/<CategoryController>/5
         //[HttpDelete("{id}")]
-        //public void Delete(int id)
+        //public async Task Delete(int id)
         //{
+        //    CategoryDTO category = await _service.delete(id);
+        //    return ;
         //}
     }
 }

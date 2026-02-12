@@ -19,7 +19,7 @@ namespace Repositories
         {
             return await _context.Categories.ToListAsync();
         }
-        public async Task<Category> getCategorieById(int id)
+        public async Task<Category> getCategoryById(int id)
         {
             return await _context.Categories.FindAsync(id);
         }
