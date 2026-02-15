@@ -25,6 +25,13 @@ builder.Services.AddDbContext<ShowsCenterContext>(option=>option.UseSqlServer(
     ));
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Host.UseNLog();
+builder.Services.AddCors(options => {
+    options.AddDefaultPolicy(policy => {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
@@ -35,7 +42,7 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/openapi/v1.json", "My API V1");
     });
 }
-// Configure the HTTP request pipeline.
+app.UseCors();
 
 app.UseHttpsRedirection();
 
