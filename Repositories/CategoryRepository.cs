@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -29,5 +30,12 @@ namespace Repositories
             await _context.SaveChangesAsync();
             return category;
         }
+        public async Task<int> Delete(int id)
+        {
+           var item =  await _context.Categories.FindAsync(id);
+           _context.Categories.Remove(item);
+           return await _context.SaveChangesAsync();
+        }
+
     }
 }

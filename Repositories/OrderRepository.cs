@@ -25,7 +25,10 @@ namespace Repositories
         }
         public async Task<Order> getOrderById(int id)
         {
-            return await _context.Orders.FirstOrDefaultAsync(o=>o.Id == id);
+            return await _context.Orders
+                .Include(i => i.User)
+                .Include(c=>c.OrderedSeats)
+                .FirstOrDefaultAsync(o=>o.Id == id);
         }
         public async Task<Order> addOrder(Order order)
         {

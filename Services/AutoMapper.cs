@@ -20,6 +20,7 @@ namespace Services
             CreateMap<UserLoginDTO, User>();
             CreateMap<Category, CategoryDTO>();
             CreateMap<CategoryDTO, Category> ();
+            CreateMap<OrderedSeat, OrderedSeatReadDTO>();
 
         }
     }

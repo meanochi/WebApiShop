@@ -39,7 +39,6 @@ namespace WebApiShop.Controllers
         {
             
             OrderDTO newOrderDTO = await _service.addOrder(orderDTO);
-            //OrdersDTO orederDTO = _mapper.Map<Order, OrdersDTO>(order);
             if (newOrderDTO == null)
                 return BadRequest();
             return CreatedAtAction(nameof(Get), new { newOrderDTO.Id }, orderDTO);
