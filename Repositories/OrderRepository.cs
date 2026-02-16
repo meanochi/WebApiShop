@@ -17,12 +17,17 @@ namespace Repositories
         }
         public async Task<List<Order>> getAllOrders()
         {
-            return await _context.Orders.ToListAsync();
+            return await _context.Orders.Include(i => i.User)
+                .Include(c => c.OrderedSeats).ToListAsync();
         }
-        public async Task<List<Order>> getOrdersForUser(User user)
+        public async Task<List<Order>> getOrdersForUser(int userId)
         {
-            return await _context.Orders.Where(u => u.UserId == user.Id).ToListAsync();
+            return await _context.Orders
+                .Include(i => i.User)
+                .Include(c => c.OrderedSeats)
+                .Where(u => u.UserId == userId).ToListAsync();
         }
+                
         public async Task<Order> getOrderById(int id)
         {
             return await _context.Orders
@@ -40,7 +45,7 @@ namespace Repositories
                 return null;
         }
 
-        public async Task<Order> updateOrder(Order order, int id)
+        public async Task<Order> updateOrder(Order order)
         {
             _context.Orders.Update(order);
             await _context.SaveChangesAsync();

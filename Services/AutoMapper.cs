@@ -21,6 +21,7 @@ namespace Services
             CreateMap<Category, CategoryDTO>();
             CreateMap<CategoryDTO, Category> ();
             CreateMap<OrderedSeat, OrderedSeatReadDTO>();
+            CreateMap<OrderUpdateDTO, Order>();
 
         }
     }

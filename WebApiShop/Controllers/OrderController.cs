@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -18,12 +19,14 @@ namespace WebApiShop.Controllers
             _service = service;
         }
 
-        //// GET: api/<OrderController>
-        //[HttpGet]
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
+        [HttpGet]
+        public async Task<ActionResult<List<OrderDTO>>> GetAllOrders()
+        {
+            List<OrderDTO> orders = await _service.getAllOrders();
+            if (orders == null || orders.Count == 0)
+                return NoContent();
+            return Ok(orders);
+        }
 
         // GET api/<OrderController>/5
         [HttpGet("{id}")]
@@ -32,7 +35,14 @@ namespace WebApiShop.Controllers
             OrderDTO order = await _service.getOrderById(id);
             return Ok(order);
         }
-
+        [HttpGet("userId")]
+        public async Task<ActionResult<List<OrderDTO>>> GetForUser(int id)
+        {
+            List<OrderDTO> orders = await _service.getOrdersForUser(id);
+            if (orders == null || orders.Count == 0)
+                return NoContent();
+            return Ok(orders);
+        }
         // POST api/<OrderController>
         [HttpPost]
         public async Task<ActionResult<OrderDTO>> Post([FromBody] OrderCreateDTO orderDTO)
@@ -45,11 +55,15 @@ namespace WebApiShop.Controllers
 
         }
 
-        //// PUT api/<OrderController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
+        // PUT api/<OrderController>/5
+        [HttpPut("{id}")]
+        public async Task<ActionResult<OrderDTO>> Put(int id, [FromBody] OrderUpdateDTO orderToUpdat)
+        {
+            OrderDTO order = await _service.updateOrder(orderToUpdat,id);
+            if(order == null)
+                return BadRequest();
+            return Ok(order);
+        }
 
         //// DELETE api/<OrderController>/5
         //[HttpDelete("{id}")]

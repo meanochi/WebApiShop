@@ -55,7 +55,6 @@ namespace WebApiShop.Controllers
         {
             UserReadDTO user = await _userService.UpdateUser(userToUpdate);
             if (user == null)
-                if()
                 return BadRequest("Password is too weak");
             else
                 return Ok(user);
