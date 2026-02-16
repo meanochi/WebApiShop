@@ -20,7 +20,6 @@ namespace Services
             CreateMap<UserLoginDTO, User>();
             CreateMap<Category, CategoryDTO>();
             CreateMap<CategoryDTO, Category> ();
-<<<<<<< HEAD
             CreateMap<ProviderReadDTO, Provider>();
             CreateMap<Provider, ProviderReadDTO>();
             CreateMap<ProviderCreateDTO, Provider> ();
@@ -29,11 +28,9 @@ namespace Services
             CreateMap<ShowCreateDTO, Show>();
             CreateMap<Show, ShowCreateDTO>();
             CreateMap<ShowUpdateDTO, Show>();
-=======
             CreateMap<OrderedSeat, OrderedSeatReadDTO>();
             CreateMap<OrderUpdateDTO, Order>();
 
->>>>>>> c60975b1a73b69ca3c892866c2d2908667700101
         }
     }
 }
