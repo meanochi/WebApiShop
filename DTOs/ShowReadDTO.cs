@@ -14,8 +14,10 @@ namespace DTOs
         string Sector, 
         string Description, 
         string ImgUrl, 
+        int CategoryId,
         string CategoryName,
         ICollection<OrderedSeat> OrderedSeats,
+        int ProviderId,
         string ProviderName,
         string ProviderProfileImgUrl,
         ICollection<Section> Sections
