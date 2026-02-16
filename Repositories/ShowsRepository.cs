@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 namespace Repositories
 {
@@ -20,6 +21,7 @@ namespace Repositories
         {
             return await _context.Shows.Include(s=>s.Provider).Include(s=>s.Category).ToListAsync();
         }
+
         public async Task<Show> getShowById(int id)
         {
             return await _context.Shows.Include(s=>s.Provider).Include(s=>s.Category).FirstOrDefaultAsync(o => o.Id == id);
