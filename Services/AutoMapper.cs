@@ -20,7 +20,14 @@ namespace Services
             CreateMap<UserLoginDTO, User>();
             CreateMap<Category, CategoryDTO>();
             CreateMap<CategoryDTO, Category> ();
-
+            CreateMap<ProviderReadDTO, Provider>();
+            CreateMap<Provider, ProviderReadDTO>();
+            CreateMap<ProviderCreateDTO, Provider> ();
+            CreateMap<Section, SectionReadDTO>();
+            CreateMap<Show, ShowReadDTO>();
+            CreateMap<ShowCreateDTO, Show>();
+            CreateMap<Show, ShowCreateDTO>();
+            CreateMap<ShowUpdateDTO, Show>();
         }
     }
 }

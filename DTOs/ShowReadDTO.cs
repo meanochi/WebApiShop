@@ -7,9 +7,9 @@ namespace DTOs
     public record ShowReadDTO(
         int Id, 
         string Title, 
-        DateOnly Date, 
-        TimeOnly BeginTime, 
-        TimeOnly Duration, 
+        DateOnly Date,
+        TimeOnly BeginTime,
+        TimeOnly Duration,
         string Audience, 
         string Sector, 
         string Description, 

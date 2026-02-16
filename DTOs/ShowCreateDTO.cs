@@ -5,9 +5,9 @@ namespace DTOs
 {
     public record ShowCreateDTO(
         string Title, 
-        DateOnly Date, 
-        TimeOnly BeginTime, 
-        TimeOnly Duration, 
+        DateOnly Date,
+        TimeOnly BeginTime,
+        TimeOnly Duration,
         string Audience, 
         string Sector, 
         string Description, 
