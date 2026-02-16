@@ -15,7 +15,7 @@ public partial class Show
 
     public TimeOnly BeginTime { get; set; }
 
-    public TimeOnly Duration { get; set; }
+    public TimeOnly EndTime { get; set; }
 
     public string Audience { get; set; }
 
