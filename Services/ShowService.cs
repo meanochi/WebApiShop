@@ -46,6 +46,12 @@ namespace Services
             ShowReadDTO showDTO = _mapper.Map<Show, ShowReadDTO>(show);
             return showDTO;
         }
+        public async Task<(IEnumerable<ShowReadDTO> shows, int total)> getAllShows(string? description, int? minPrice, int? maxPrice, int skip, int position, int[]? categoryId)
+        {
+            (IEnumerable<Show> shows, int total) shows = await _repository.getAllShows(description, minPrice, maxPrice, skip, position, categoryId);
+            IEnumerable<ShowReadDTO> showsDTO = _mapper.Map< IEnumerable<Show>, IEnumerable<ShowReadDTO>>(shows.shows);
+            return (showsDTO, shows.total);
+        }
 
         public async Task<(IEnumerable<ShowReadDTO> shows, int total)> getAllShows(string description, int? minPrice, int? maxPrice, int skip, int position, int[]? categoryId)
         {

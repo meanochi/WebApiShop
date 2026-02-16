@@ -42,18 +42,21 @@ namespace Repositories
             return show;
         }
 
-        public async Task<(IEnumerable<Show> shows, int total)> getAllShows( string description, int? minPrice, int? maxPrice, int skip, int position,int[]? categoryId)
+        public async Task<(IEnumerable<Show> shows, int total)> getAllShows(string? description, int? minPrice, int? maxPrice, int skip, int position,int[]? categoryId)
         {
+            
             var query = _context.Shows.Where(show =>
-                        (description == null ? (true) : (show.Description.Contains(description)))
-                        && ((minPrice == null) ? (true) : (minShowPrice(show) >= minPrice))
-                        && ((maxPrice == null) ? (true) : (maxShowPrice(show) <= maxPrice))
+                        (description == null ? (true) : (show.Title.Contains(description)))
+                        && ((minPrice == null) ? (true) : (show.Sections.Min(s=>s.Price) >= minPrice))
+                        && ((maxPrice == null) ? (true) : (show.Sections.Max(s => s.Price) <= maxPrice))
                         && (categoryId == null || categoryId.Length == 0 || categoryId.Contains(show.CategoryId)))
-                            .OrderBy(show => minShowPrice(show));
+                            .OrderBy(show => show.Sections.Min(s => s.Price)).Include(s => s.Provider).Include(s => s.Category);
 
-            Console.WriteLine(query.ToQueryString());
+            //Console.WriteLine(query.ToQueryString());
             List<Show> shows = await query.Skip((position - 1) * skip)
-            .Take(skip).Include(show => show.Category).ToListAsync();
+            .Take(skip)
+            //.Include(show => show.Category)
+            .ToListAsync();
             var total = await query.CountAsync();
             return (shows, total);
         }
