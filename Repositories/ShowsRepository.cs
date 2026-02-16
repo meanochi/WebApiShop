@@ -42,7 +42,7 @@ namespace Repositories
             return show;
         }
 
-        public async Task<(IEnumerable<Show> shows, int total)> getAllShows(string? description, int? minPrice, int? maxPrice, int skip, int position,int[]? categoryId)
+        public async Task<(IEnumerable<Show> shows, int total)> getAllShows(string? description, int? minPrice, int? maxPrice, int skip, int position, int[] categoryId)
         {
             
             var query = _context.Shows.Where(show =>

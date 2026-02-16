@@ -58,16 +58,6 @@ namespace WebApiShop.Controllers
             return Ok(updatedShow);
         }
 
-        // GET: api/<ShowsController>
-        [HttpGet("filers")]
-        public async Task<ActionResult<(IEnumerable<ShowReadDTO> shows, int total)>> getAllShows(string description, int? minPrice, int? maxPrice, int skip, int position, [FromBody] int[]? categoryId)
-        {
-            (IEnumerable<ShowReadDTO> shows, int total) shows = await _showService.getAllShows(description, minPrice, maxPrice, skip, position, categoryId);
-            if (shows.shows == null)
-                return NoContent();
-            return Ok(shows);
-        }
-
         // DELETE api/<ShowsController>/5
         //[HttpDelete("{id}")]
         //public void Delete(int id)
@@ -76,10 +66,10 @@ namespace WebApiShop.Controllers
 
         // GET: api/<ShowsController>
         [HttpGet("filters")]
-        public async Task<ActionResult<(IEnumerable<ShowReadDTO> shows, int total)>> GetAll(string? description, int? minPrice, int? maxPrice, int skip, int position, int categoryId)
+        public async Task<ActionResult<(IEnumerable<ShowReadDTO> shows, int total)>> GetAll(string? description, int? minPrice, int? maxPrice, int skip, int position, [FromBody] int[] categoryId)
         {
-            int[] categorys = new int[0];
-            (IEnumerable<ShowReadDTO> shows, int total) shows = await _showService.getAllShows(description, minPrice, maxPrice, skip, position, categorys);
+            //int[] categorys = new int[0];
+            (IEnumerable<ShowReadDTO> shows, int total) shows = await _showService.getAllShows(description, minPrice, maxPrice, skip, position, categoryId);
             if (shows.shows == null)
                 return NoContent();
             return Ok(shows.shows);
