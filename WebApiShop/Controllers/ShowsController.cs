@@ -66,10 +66,9 @@ namespace WebApiShop.Controllers
 
         // GET: api/<ShowsController>
         [HttpGet("filters")]
-        public async Task<ActionResult<(IEnumerable<ShowReadDTO> shows, int total)>> GetAll(string? description, int? minPrice, int? maxPrice, int skip, int position, [FromBody] int[] categoryId)
+        public async Task<ActionResult<(IEnumerable<ShowReadDTO> shows, int total)>> GetAll(string? description, int? minPrice, int? maxPrice, int skip, int position, [FromQuery] int[] categoryIdS, [FromQuery] string[] sectors, [FromQuery] string[] audiences)
         {
-            //int[] categorys = new int[0];
-            (IEnumerable<ShowReadDTO> shows, int total) shows = await _showService.getAllShows(description, minPrice, maxPrice, skip, position, categoryId);
+            (IEnumerable<ShowReadDTO> shows, int total) shows = await _showService.getAllShows(description, minPrice, maxPrice, skip, position, categoryIdS, sectors, audiences);
             if (shows.shows == null)
                 return NoContent();
             return Ok(shows.shows);
