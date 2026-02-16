@@ -126,6 +126,7 @@ public partial class ShowsCenterContext : DbContext
                 .HasMaxLength(15)
                 .IsFixedLength();
             entity.Property(e => e.BeginTime).HasColumnName("Begin_time");
+            entity.Property(e => e.EndTime).HasColumnName("End_time");
             entity.Property(e => e.CategoryId).HasColumnName("Category_id");
             entity.Property(e => e.Description)
                 .HasMaxLength(50)

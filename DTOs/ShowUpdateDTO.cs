@@ -8,7 +8,7 @@ namespace DTOs
         string Title, 
         DateOnly Date,
         TimeOnly BeginTime,
-        TimeOnly Duration,
+        TimeOnly EndTime,
         string Audience, 
         string Sector, 
         string Description, 
