@@ -20,7 +20,7 @@ namespace WebApiShop.Controllers
 
         // GET: api/<ShowsController>
         [HttpGet]
-        public async Task<ActionResult<List<Show>>> Get()
+        public async Task<ActionResult<List<ShowReadDTO>>> Get()
         {
             List<ShowReadDTO> shows = await _showService.getAllShows();
             if(shows==null)
@@ -30,7 +30,7 @@ namespace WebApiShop.Controllers
 
         // GET api/<ShowsController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Show>> Get(int id)
+        public async Task<ActionResult<ShowReadDTO>> Get(int id)
         {
             ShowReadDTO show = await _showService.getShowById(id);
             if (show == null)
@@ -63,5 +63,17 @@ namespace WebApiShop.Controllers
         //public void Delete(int id)
         //{
         //}
+
+        // GET: api/<ShowsController>
+        [HttpGet("filters")]
+        public async Task<ActionResult<(IEnumerable<ShowReadDTO> shows, int total)>> GetAll(string? description, int? minPrice, int? maxPrice, int skip, int position, int categoryId)
+        {
+            int[] categorys = new int[0];
+            (IEnumerable<ShowReadDTO> shows, int total) shows = await _showService.getAllShows(description, minPrice, maxPrice, skip, position, categorys);
+            if (shows.shows == null)
+                return NoContent();
+            return Ok(shows.shows);
+        }
+
     }
 }
