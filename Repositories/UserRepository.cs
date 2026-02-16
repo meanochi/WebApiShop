@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
@@ -13,13 +14,22 @@ namespace Repositories
         }
         public async Task<User> getUserById(int id)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+            return await _context.Users.Include(c => c.Orders)
+                                        .FirstOrDefaultAsync(u => u.Id == id);
         }
 
         public async Task<User> addUser(User user)
         {
+            
            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch(DbUpdateException ex)
+            {
+                return null;
+            }
             if (getUserById(user.Id) != null)
                 return user;
             else

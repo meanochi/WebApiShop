@@ -9,6 +9,7 @@ namespace Services
         Task<List<CategoryDTO>> getAllCategories();
         Task<CategoryDTO> getCategoryById(int id);
         Task<Category> addCategory(CategoryDTO category);
+        Task<int> Delete(int id);
 
     }
 }

@@ -41,5 +41,10 @@ namespace Services
             newCategory =  await _repository.addCategory(newCategory);
             return newCategory;
         }
+        public async Task<int> Delete(int id)
+        {
+            return await _repository.Delete(id);
+        }
+
     }
 }

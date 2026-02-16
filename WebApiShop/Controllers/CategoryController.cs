@@ -2,6 +2,8 @@
 using DTOs;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Repositories;
 using Services;
 
@@ -27,7 +29,10 @@ namespace WebApiShop.Controllers
         public async Task<ActionResult<List<CategoryDTO>>> Get()
         {
             List<CategoryDTO> categories = await _service.getAllCategories();
-            return Ok(categories);
+            if(categories != null)
+                return Ok(categories);
+            else
+                return NoContent();
         }
 
         // GET api/<CategoryController>/5
@@ -35,7 +40,10 @@ namespace WebApiShop.Controllers
         public async Task<ActionResult<CategoryDTO>> Get(int id)
         {
             CategoryDTO category = await _service.getCategoryById(id);
-            return Ok(category);
+            if (category != null)
+                return Ok(category);
+            else
+                return NoContent();
         }
 
 
@@ -57,12 +65,22 @@ namespace WebApiShop.Controllers
 
         //}
 
-        // DELETE api/<CategoryController>/5
-        //[HttpDelete("{id}")]
-        //public async Task Delete(int id)
-        //{
-        //    CategoryDTO category = await _service.delete(id);
-        //    return ;
-        //}
+        //DELETE api/<CategoryController>/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var item = await _service.getCategoryById(id);
+
+            if (item == null)
+            {
+                return NotFound();
+            }
+            int rowsAffected = await _service.Delete(id);
+            if (rowsAffected > 0)
+            {
+                return NoContent();
+            }
+            return BadRequest();
+        }
     }
 }
