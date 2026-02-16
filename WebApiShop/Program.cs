@@ -5,7 +5,9 @@ using Repositories;
 using Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<ShowsCenterContext>(options =>
+    options.UseSqlServer(connectionString));
 // Add services to the container.
 //builder.Services.AddScoped<ILoginRepository, LoginRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -27,8 +29,9 @@ builder.Services.AddScoped<ISectionService, SectionService>();
 builder.Services.AddScoped<IShowService, ShowService>();
 //builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddDbContext<ShowsCenterContext>(option=>option.UseSqlServer(
-    "Data Source=RACHELI;Initial Catalog=ShowsCenter;Integrated Security=True;Pooling=False;Trust Server Certificate=True;"
+    "Data Source=michal;Initial Catalog=ShowsCenter;Integrated Security=True;Pooling=False;Trust Server Certificate=True;"
     ));
+
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Host.UseNLog();
 builder.Services.AddCors(options => {
