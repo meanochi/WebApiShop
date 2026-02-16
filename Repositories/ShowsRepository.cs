@@ -58,31 +58,6 @@ namespace Repositories
             return (shows, total);
         }
 
-        public int minShowPrice(Show show)
-        {
-            int minPrice = int.MaxValue;
-            foreach (var section in show.Sections)
-            {
-                if(section.Price < minPrice)
-                {
-                    minPrice = (int)section.Price;
-                }
-            }
-            return minPrice;
-        }
-
-        public int maxShowPrice(Show show)
-        {
-            int maxPrice = int.MinValue;
-            foreach (var section in show.Sections)
-            {
-                if (section.Price < maxPrice)
-                {
-                    maxPrice = (int)section.Price;
-                }
-            }
-            return maxPrice;
-        }
 
         //public async Task deleteShow(int id)
         //{
