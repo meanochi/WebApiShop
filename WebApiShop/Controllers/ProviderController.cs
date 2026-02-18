@@ -43,9 +43,9 @@ namespace WebApiShop.Controllers
 
         // POST api/<ProviderController>
         [HttpPost]
-        public async Task<ActionResult<ProviderReadDTO>> Post([FromBody] ProviderCreateDTO provider)
+        public async Task<ActionResult<ProviderReadDTO>> Post([FromBody] ProviderCreateDTO provider, int userId)
         {
-            ProviderReadDTO createdProvider = await _providerService.addProvider(provider);
+            ProviderReadDTO? createdProvider = await _providerService.addProvider(provider, userId);
             if (createdProvider == null)
                 return BadRequest();
             return CreatedAtAction(nameof(Get), new { id = createdProvider.Id }, createdProvider);

@@ -1,23 +1,26 @@
-﻿using System;
+﻿using AutoMapper;
+using DTOs;
+using Entities;
+using Repositories;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Repositories;
-using DTOs;
-using AutoMapper;
-using Entities;
 
 namespace Services
 {
     public class ProviderService : IProviderService
     {
+        IAuth _auth;
         IProviderRepository _repository;
         IMapper _mapper;
-        public ProviderService(IProviderRepository repository, IMapper mapper)
+        public ProviderService(IProviderRepository repository, IMapper mapper, IAuth auth)
         {
             _repository = repository;
             _mapper = mapper;
+            _auth = auth;
         }
 
         public async Task<ProviderReadDTO> getProviderById(int id)
@@ -34,8 +37,10 @@ namespace Services
             return providerDTOs;
         }
 
-        public async Task<ProviderReadDTO> addProvider(ProviderCreateDTO provider)
+        public async Task<ProviderReadDTO?> addProvider(ProviderCreateDTO provider, int userId)
         {
+            if (!await _auth.IsManager(userId))
+                return null;
             Provider newProvider = _mapper.Map<ProviderCreateDTO, Provider>(provider);
             newProvider = await _repository.addProvider(newProvider);
             ProviderReadDTO providerDTO = _mapper.Map<Provider, ProviderReadDTO>(newProvider);

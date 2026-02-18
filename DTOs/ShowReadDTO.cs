@@ -16,10 +16,10 @@ namespace DTOs
         string ImgUrl, 
         int CategoryId,
         string CategoryName,
-        ICollection<OrderedSeat> OrderedSeats,
+        ICollection<OrderedSeatReadDTO> OrderedSeats,
         int ProviderId,
         string ProviderName,
         string ProviderProfileImgUrl,
-        ICollection<Section> Sections
+        ICollection<SectionReadDTO> Sections
         );
 }

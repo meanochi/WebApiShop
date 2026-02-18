@@ -50,9 +50,9 @@ namespace WebApiShop.Controllers
 
         // POST api/<CategoryController>
         [HttpPost]
-        public async Task<ActionResult<Category>> Post([FromBody] CategoryDTO category)
+        public async Task<ActionResult<Category>> Post([FromBody] CategoryDTO category,int userId)
         {
-            Category newCategory = await _service.addCategory(category);
+            Category newCategory = await _service.addCategory(category, userId);
             if (newCategory == null)
                 return BadRequest();
             return CreatedAtAction(nameof(Get), new { newCategory.Id }, newCategory);
@@ -67,7 +67,7 @@ namespace WebApiShop.Controllers
 
         //DELETE api/<CategoryController>/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id, int userId)
         {
             var item = await _service.getCategoryById(id);
 
@@ -75,7 +75,9 @@ namespace WebApiShop.Controllers
             {
                 return NotFound();
             }
-            int rowsAffected = await _service.Delete(id);
+            int? rowsAffected = await _service.Delete(id,userId);
+            if (rowsAffected == null)
+                return Unauthorized();
             if (rowsAffected > 0)
             {
                 return NoContent();

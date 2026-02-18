@@ -4,7 +4,7 @@ namespace Services
 {
     public interface IProviderService
     {
-        Task<ProviderReadDTO> addProvider(ProviderCreateDTO provider);
+        Task<ProviderReadDTO?> addProvider(ProviderCreateDTO provider, int userId);
         Task<List<ProviderReadDTO>> getAllProviders();
         Task<ProviderReadDTO> getProviderById(int id);
     }
