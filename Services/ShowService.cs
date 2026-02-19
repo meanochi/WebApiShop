@@ -1,24 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using DTOs;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
 using Repositories;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Services
 {
     public class ShowService : IShowService
     {
+        IAuth _auth;
         IShowsRepository _repository;
         IMapper _mapper;
-        public ShowService(IShowsRepository repository, IMapper mapper)
+        public ShowService(IShowsRepository repository, IMapper mapper, IAuth auth)
         {
             _repository = repository;
             _mapper = mapper;
+            _auth = auth;
         }
 
         public async Task<List<ShowReadDTO>> getAllShows()
@@ -33,15 +36,19 @@ namespace Services
             ShowReadDTO showDTO = _mapper.Map<Show, ShowReadDTO>(show);
             return showDTO;
         }
-        public async Task<ShowReadDTO> addShow(ShowCreateDTO showCDTO)
+        public async Task<ShowReadDTO?> addShow(ShowCreateDTO showCDTO, int userId)
         {
+            if ( !await _auth.IsManager(userId))
+                return null;
             Show show = _mapper.Map<ShowCreateDTO, Show>(showCDTO);
             show = await _repository.addShow(show);
             ShowReadDTO showDTO = _mapper.Map<Show, ShowReadDTO>(show);
             return showDTO;
         }
-        public async Task<ShowReadDTO> updateShow(ShowUpdateDTO showUDTO, int id)
+        public async Task<ShowReadDTO?> updateShow(ShowUpdateDTO showUDTO, int id, int userId)
         {
+            if (!await _auth.IsManager(userId))
+                return null;
             Show show = _mapper.Map<ShowUpdateDTO, Show>(showUDTO);
             show = await _repository.updateOrder(show, id);
             ShowReadDTO showDTO = _mapper.Map<Show, ShowReadDTO>(show);

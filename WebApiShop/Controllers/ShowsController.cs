@@ -40,7 +40,7 @@ namespace WebApiShop.Controllers
 
         // POST api/<ShowsController>
         [HttpPost]
-        public async Task<ActionResult<ShowReadDTO>> Post([FromBody] ShowCreateDTO show)
+        public async Task<ActionResult<ShowReadDTO>> Post([FromBody] ShowCreateDTO show, int userId)
         {
             ShowReadDTO createdShow = await _showService.addShow(show);
             if (createdShow == null)
@@ -50,11 +50,11 @@ namespace WebApiShop.Controllers
 
         // PUT api/<ShowsController>/5
         [HttpPut("{id}")]
-        public async Task<ActionResult<ShowReadDTO>> Put(int id, [FromBody] ShowUpdateDTO show)
+        public async Task<ActionResult<ShowReadDTO>> Put(int id, [FromBody] ShowUpdateDTO show, int userId)
         {
-            ShowReadDTO updatedShow = await _showService.updateShow(show, id);
+            ShowReadDTO? updatedShow = await _showService.updateShow(show, id, userId);
             if (updatedShow == null)
-                return BadRequest();
+                return Unauthorized();
             return Ok(updatedShow);
         }
 

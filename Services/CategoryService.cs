@@ -13,13 +13,15 @@ namespace Services
 {
     public class CategoryService : ICategoryService
     {
+        IAuth _auth;
         ICategoryRepository _repository;
         IMapper _mapper;
 
-        public CategoryService(ICategoryRepository repository, IMapper mapper)
+        public CategoryService(ICategoryRepository repository, IMapper mapper, IAuth auth)
         {
             _repository = repository;
             _mapper = mapper;
+            _auth = auth;
         }
         public async Task<List<CategoryDTO>> getAllCategories()
         {
@@ -35,14 +37,22 @@ namespace Services
             return categoryDTO;
 
         }
-        public async Task<Category> addCategory(CategoryDTO category)
+        public async Task<Category?> addCategory(CategoryDTO category, int userId)
         {
+            if (!await _auth.IsManager(userId))
+            {
+                return null;
+            }
             Category newCategory = _mapper.Map<CategoryDTO, Category>(category);
             newCategory =  await _repository.addCategory(newCategory);
             return newCategory;
         }
-        public async Task<int> Delete(int id)
+        public async Task<int?> Delete(int id, int userId)
         {
+            if (!await _auth.IsManager(userId))
+            {
+                return null;
+            }
             return await _repository.Delete(id);
         }
 
