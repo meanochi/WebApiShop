@@ -19,14 +19,14 @@ namespace WebApiShop.Controllers
         }
 
         // GET: api/<ShowsController>
-        [HttpGet]
-        public async Task<ActionResult<List<ShowReadDTO>>> Get()
-        {
-            List<ShowReadDTO> shows = await _showService.getAllShows();
-            if(shows==null)
-                return NoContent();
-            return Ok(shows);
-        }
+        //[HttpGet]
+        //public async Task<ActionResult<List<ShowReadDTO>>> Get()
+        //{
+        //    List<ShowReadDTO> shows = await _showService.getAllShows();
+        //    if(shows==null)
+        //        return NoContent();
+        //    return Ok(shows);
+        //}
 
         // GET api/<ShowsController>/5
         [HttpGet("{id}")]
@@ -43,9 +43,9 @@ namespace WebApiShop.Controllers
         public async Task<ActionResult<ShowReadDTO>> Post([FromBody] ShowCreateDTO show)
         {
             ShowReadDTO createdShow = await _showService.addShow(show);
-            if(createdShow == null)
+            if (createdShow == null)
                 return BadRequest();
-            return CreatedAtAction(nameof(Get), new { createdShow.Title}, createdShow); ;
+            return CreatedAtAction(nameof(Get), new { createdShow.Title }, createdShow); ;
         }
 
         // PUT api/<ShowsController>/5
@@ -65,10 +65,18 @@ namespace WebApiShop.Controllers
         //}
 
         // GET: api/<ShowsController>
-        [HttpGet("filters")]
-        public async Task<ActionResult<(IEnumerable<ShowReadDTO> shows, int total)>> GetAll(string? description, int? minPrice, int? maxPrice, int skip, int position, [FromQuery] int[] categoryIdS, [FromQuery] string[] sectors, [FromQuery] string[] audiences)
+        //[HttpGet]
+        //public async Task<ActionResult<(IEnumerable<ShowReadDTO> shows, int total)>> GetAll(string? description, int? minPrice, int? maxPrice, int skip, int position, [FromQuery] int[] categoryIdS, [FromQuery] string[] sectors, [FromQuery] string[] audiences)
+        //{
+        //    (IEnumerable<ShowReadDTO> shows, int total) shows = await _showService.getAllShows(description, minPrice, maxPrice, skip, position, categoryIdS, sectors, audiences);
+        //    if (shows.shows == null)
+        //        return NoContent();
+        //    return Ok(shows.shows);
+        //}
+        [HttpGet]
+        public async Task<ActionResult<(IEnumerable<ShowReadDTO> shows, int total)>> GetAll([FromQuery] ShowFilterDTO filters)
         {
-            (IEnumerable<ShowReadDTO> shows, int total) shows = await _showService.getAllShows(description, minPrice, maxPrice, skip, position, categoryIdS, sectors, audiences);
+            (IEnumerable<ShowReadDTO> shows, int total) shows = await _showService.getAllShows(filters);
             if (shows.shows == null)
                 return NoContent();
             return Ok(shows.shows);

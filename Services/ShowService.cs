@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using DTOs;
 using Entities;
+using Microsoft.AspNetCore.Mvc;
 using Repositories;
 
 namespace Services
@@ -46,9 +47,9 @@ namespace Services
             ShowReadDTO showDTO = _mapper.Map<Show, ShowReadDTO>(show);
             return showDTO;
         }
-        public async Task<(IEnumerable<ShowReadDTO> shows, int total)> getAllShows(string? description, int? minPrice, int? maxPrice, int skip, int position, int[] categoryId, string[] sectors, string[] audiences)
+        public async Task<(IEnumerable<ShowReadDTO> shows, int total)> getAllShows([FromQuery] ShowFilterDTO filters)
         {
-            (IEnumerable<Show> shows, int total) shows = await _repository.getAllShows(description, minPrice, maxPrice, skip, position, categoryId, sectors, audiences);
+            (IEnumerable<Show> shows, int total) shows = await _repository.getAllShows(filters);
             IEnumerable<ShowReadDTO> showsDTO = _mapper.Map< IEnumerable<Show>, IEnumerable<ShowReadDTO>>(shows.shows);
             return (showsDTO, shows.total);
         }

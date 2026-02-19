@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Entities;
+using DTOs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 
@@ -42,21 +43,21 @@ namespace Repositories
             return show;
         }
 
-        public async Task<(IEnumerable<Show> shows, int total)> getAllShows(string? description, int? minPrice, int? maxPrice, int skip, int position, int[] categoryId, string[] sectors, string[] audiences)
+        public async Task<(IEnumerable<Show> shows, int total)> getAllShows(ShowFilterDTO filters)
         {
             
             var query = _context.Shows.Where(show =>
-                        (description == null ? (true) : (show.Title.Contains(description)))
-                        && ((minPrice == null) ? (true) : (show.Sections.Min(s=>s.Price) >= minPrice))
-                        && ((maxPrice == null) ? (true) : (show.Sections.Max(s => s.Price) <= maxPrice))
-                        && (categoryId == null || categoryId.Length == 0 || categoryId.Contains(show.CategoryId))
-                        && (audiences == null || audiences.Length == 0 || audiences.Contains(show.Audience))
-                        && (sectors == null || sectors.Length ==0 || sectors.Contains(show.Sector)))
+                        (filters == null ? (true) : (show.Title.Contains(filters.description)))
+                        && ((filters.minPrice == null) ? (true) : (show.Sections.Min(s=>s.Price) >= filters.minPrice))
+                        && ((filters.maxPrice == null) ? (true) : (show.Sections.Max(s => s.Price) <= filters.maxPrice))
+                        && (filters.categoryIdS == null || filters.categoryIdS.Length == 0 || filters.categoryIdS.Contains(show.CategoryId))
+                        && (filters.audiences == null || filters.audiences.Length == 0 || filters.audiences.Contains(show.Audience))
+                        && (filters.sectors == null || filters.sectors.Length ==0 || filters.sectors.Contains(show.Sector)))
                             .OrderBy(show => show.Sections.Min(s => s.Price)).Include(s => s.Provider).Include(s => s.Category);
 
             //Console.WriteLine(query.ToQueryString());
-            List<Show> shows = await query.Skip((position - 1) * skip)
-            .Take(skip)
+            List<Show> shows = await query.Skip((filters.position - 1) * filters.skip)
+            .Take(filters.skip)
             .Include(show => show.Category)
             .Include(show =>show. Sections)
             .ToListAsync();
