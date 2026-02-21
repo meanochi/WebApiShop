@@ -20,8 +20,7 @@ public partial class ShowsCenterContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            // 🚨 ודא ששורה זו קיימת!
-            optionsBuilder.UseSqlServer("Data Source=RACHELI;Initial Catalog=ShowsCenter;Integrated Security=True;Pooling=False;Trust Server Certificate=True;MultipleActiveResultSets=true");
+            // Only for design-time or tools; don't hard-code production connection strings here.
         }
     }
     public virtual DbSet<Category> Categories { get; set; }

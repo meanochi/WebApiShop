@@ -29,11 +29,8 @@ namespace Repositories
         {
             await _context.Providers.AddAsync(provider);
             await _context.SaveChangesAsync();
-            if (getProviderById(provider.Id) != null)
-                return provider;
-            else
-                return null;
-
+            var saved = await getProviderById(provider.Id); // await here
+            return saved != null ? provider : null;
         }
     }
 }
