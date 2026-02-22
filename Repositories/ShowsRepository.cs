@@ -45,21 +45,21 @@ namespace Repositories
 
         public async Task<(IEnumerable<Show> shows, int total)> getAllShows(ShowFilterDTO filters)
         {
-            
+
             var query = _context.Shows.Where(show =>
-                        (filters == null ? (true) : (show.Title.Contains(filters.description)))
-                        && ((filters.minPrice == null) ? (true) : (show.Sections.Min(s=>s.Price) >= filters.minPrice))
-                        && ((filters.maxPrice == null) ? (true) : (show.Sections.Max(s => s.Price) <= filters.maxPrice))
+                        (filters.description == null ? (true) : (show.Title.Contains(filters.description)))
+                        && ((filters.minPrice == null) ? (true) : (show.Sections.Where(s => s.ShowId == show.Id).Min(s => s.Price) >= filters.minPrice))
+                        && ((filters.maxPrice == null) ? (true) : (show.Sections.Where(s => s.ShowId == show.Id).Max(s => s.Price) <= filters.maxPrice))
                         && (filters.categoryIdS == null || filters.categoryIdS.Length == 0 || filters.categoryIdS.Contains(show.CategoryId))
                         && (filters.audiences == null || filters.audiences.Length == 0 || filters.audiences.Contains(show.Audience))
-                        && (filters.sectors == null || filters.sectors.Length ==0 || filters.sectors.Contains(show.Sector)))
+                        && (filters.sectors == null || filters.sectors.Length == 0 || filters.sectors.Contains(show.Sector)))
                             .OrderBy(show => show.Sections.Min(s => s.Price)).Include(s => s.Provider).Include(s => s.Category);
 
             //Console.WriteLine(query.ToQueryString());
             List<Show> shows = await query.Skip((filters.position - 1) * filters.skip)
             .Take(filters.skip)
             .Include(show => show.Category)
-            .Include(show =>show. Sections)
+            .Include(show => show.Sections)
             .ToListAsync();
             var total = await query.CountAsync();
             return (shows, total);
