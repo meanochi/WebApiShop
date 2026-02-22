@@ -3,6 +3,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DTOs
 {
-    public record OrderedSeatReadDTO(int Id, int Row, int Col, int Status, int SectionId, 
-        string ShowTitle, string ShowImgUrl, string ShowDate, string ShowbeginTime);
+    public record OrderedSeatReadDTO(int Id, int Row, int Col, int Status,  
+        string ShowTitle, string ShowImgUrl, string ShowDate, string ShowBeginTime);
 }

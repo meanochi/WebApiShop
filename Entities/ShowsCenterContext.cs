@@ -75,7 +75,7 @@ public partial class ShowsCenterContext : DbContext
             entity.Property(e => e.ShowId).HasColumnName("Show_id");
 
             entity.HasOne(d => d.Order).WithMany(p => p.OrderedSeats)
-                .HasForeignKey(d => d.Id)
+                .HasForeignKey(d => d.OrderId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_OrdSeats_Orders");
 
