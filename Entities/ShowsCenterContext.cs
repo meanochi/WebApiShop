@@ -99,7 +99,7 @@ public partial class ShowsCenterContext : DbContext
                 .HasMaxLength(30)
                 .IsFixedLength();
             entity.Property(e => e.ProfileImgUrl)
-                .HasMaxLength(50)
+                .HasMaxLength(int.MaxValue)
                 .IsFixedLength()
                 .HasColumnName("Profile_img_url");
         });
@@ -110,6 +110,9 @@ public partial class ShowsCenterContext : DbContext
 
             entity.Property(e => e.Price).HasColumnType("money");
             entity.Property(e => e.ShowId).HasColumnName("Show_id");
+            entity.Property(e => e.SectionType)
+                .HasColumnName("Section_type")
+                .HasDefaultValue(1);
 
             entity.HasOne(d => d.Show).WithMany(p => p.Sections)
                 .HasForeignKey(d => d.ShowId)
@@ -132,7 +135,7 @@ public partial class ShowsCenterContext : DbContext
                 .HasMaxLength(50)
                 .IsFixedLength();
             entity.Property(e => e.ImgUrl)
-                .HasMaxLength(50)
+                .HasMaxLength(int.MaxValue)
                 .IsFixedLength()
                 .HasColumnName("Img_url");
             entity.Property(e => e.ProviderId).HasColumnName("Provider_id");

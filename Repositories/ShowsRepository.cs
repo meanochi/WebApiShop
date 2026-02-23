@@ -47,9 +47,9 @@ namespace Repositories
         {
             
             var query = _context.Shows.Where(show =>
-                        (filters == null ? (true) : (show.Title.Contains(filters.description)))
-                        && ((filters.minPrice == null) ? (true) : (show.Sections.Min(s=>s.Price) >= filters.minPrice))
-                        && ((filters.maxPrice == null) ? (true) : (show.Sections.Max(s => s.Price) <= filters.maxPrice))
+                        (filters.description == null ? (true) : (show.Title.Contains(filters.description)))
+                        && ((filters.minPrice == null) ? (true) : (show.Sections.Where(s => s.ShowId == show.Id).Min(s=>s.Price) >= filters.minPrice))
+                        && ((filters.maxPrice == null) ? (true) : (show.Sections.Where(s => s.ShowId == show.Id).Max(s => s.Price) <= filters.maxPrice))
                         && (filters.categoryIdS == null || filters.categoryIdS.Length == 0 || filters.categoryIdS.Contains(show.CategoryId))
                         && (filters.audiences == null || filters.audiences.Length == 0 || filters.audiences.Contains(show.Audience))
                         && (filters.sectors == null || filters.sectors.Length ==0 || filters.sectors.Contains(show.Sector)))

@@ -18,12 +18,12 @@ namespace WebApiShop.Controllers
             _showService = showService;
         }
 
-        // GET: api/<ShowsController>
+        ////GET: api/<ShowsController>
         //[HttpGet]
         //public async Task<ActionResult<List<ShowReadDTO>>> Get()
         //{
         //    List<ShowReadDTO> shows = await _showService.getAllShows();
-        //    if(shows==null)
+        //    if (shows == null)
         //        return NoContent();
         //    return Ok(shows);
         //}
@@ -42,7 +42,7 @@ namespace WebApiShop.Controllers
         [HttpPost]
         public async Task<ActionResult<ShowReadDTO>> Post([FromBody] ShowCreateDTO show, int userId)
         {
-            ShowReadDTO createdShow = await _showService.addShow(show);
+            ShowReadDTO createdShow = await _showService.addShow(show, userId);
             if (createdShow == null)
                 return BadRequest();
             return CreatedAtAction(nameof(Get), new { createdShow.Title }, createdShow); ;
@@ -52,9 +52,9 @@ namespace WebApiShop.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<ShowReadDTO>> Put(int id, [FromBody] ShowUpdateDTO show, int userId)
         {
-            ShowReadDTO? updatedShow = await _showService.updateShow(show, id, userId);
+            ShowReadDTO updatedShow = await _showService.updateShow(show, id, userId);
             if (updatedShow == null)
-                return Unauthorized();
+                return BadRequest();
             return Ok(updatedShow);
         }
 
@@ -81,6 +81,5 @@ namespace WebApiShop.Controllers
                 return NoContent();
             return Ok(shows.shows);
         }
-
     }
 }
