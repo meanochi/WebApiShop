@@ -4,5 +4,5 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DTOs
 {
-    public record CategoryDTO(string Name);
+    public record CategoryDTO(int Id, string Name);
 }

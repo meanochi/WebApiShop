@@ -45,7 +45,7 @@ namespace WebApiShop.Controllers
             ShowReadDTO createdShow = await _showService.addShow(show,userId);
             if (createdShow == null)
                 return BadRequest();
-            return CreatedAtAction(nameof(Get), new { createdShow.Title }, createdShow); ;
+            return CreatedAtAction(nameof(Get), new { createdShow.Id }, createdShow); ;
         }
 
         // PUT api/<ShowsController>/5
