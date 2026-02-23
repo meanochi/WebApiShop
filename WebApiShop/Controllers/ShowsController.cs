@@ -42,7 +42,7 @@ namespace WebApiShop.Controllers
         [HttpPost]
         public async Task<ActionResult<ShowReadDTO>> Post([FromBody] ShowCreateDTO show, int userId)
         {
-            ShowReadDTO createdShow = await _showService.addShow(show, userId);
+            ShowReadDTO createdShow = await _showService.addShow(show,userId);
             if (createdShow == null)
                 return BadRequest();
             return CreatedAtAction(nameof(Get), new { createdShow.Title }, createdShow); ;

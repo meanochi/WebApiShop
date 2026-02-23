@@ -75,7 +75,7 @@ public partial class ShowsCenterContext : DbContext
             entity.Property(e => e.ShowId).HasColumnName("Show_id");
 
             entity.HasOne(d => d.Order).WithMany(p => p.OrderedSeats)
-                .HasForeignKey(d => d.Id)
+                .HasForeignKey(d => d.OrderId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_OrdSeats_Orders");
 
@@ -110,9 +110,6 @@ public partial class ShowsCenterContext : DbContext
 
             entity.Property(e => e.Price).HasColumnType("money");
             entity.Property(e => e.ShowId).HasColumnName("Show_id");
-            entity.Property(e => e.SectionType)
-                .HasColumnName("Section_type")
-                .HasDefaultValue(1);
 
             entity.HasOne(d => d.Show).WithMany(p => p.Sections)
                 .HasForeignKey(d => d.ShowId)

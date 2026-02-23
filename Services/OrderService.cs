@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
 using DTOs;
 using Entities;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Repositories;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -59,5 +62,50 @@ namespace Services
             OrderDTO orderDTO = _mapper.Map<Order, OrderDTO>(order);
             return orderDTO;
         }
+
+        public async Task<OrderDTO> Checkout(CheckoutDTO orderToUpdate)
+        {
+
+            Order order = await _repository.Checkout(orderToUpdate);
+            OrderDTO orderDTO = _mapper.Map<Order, OrderDTO>(order);
+            return orderDTO;
+        }
+
+        public async Task<int> UnLockseat(int id, int userId)
+        {
+            Order order = await _repository.getOrderByOrderesSeatId(id);
+            if (order.UserId == userId) 
+                return await _repository.unLockSeat(id);
+            return 0;
+        }
+
+        public async Task<OrderedSeatReadDTO> LockSeat(LockSeatDTO orderDTO)
+        {
+            List<Order> ordForUser = await _repository.getOrdersForUser(orderDTO.UserId);
+            Order ord= ordForUser.FirstOrDefault(o=>o.OrderedSeats.Where(o=>o.Status==1)!=null);
+            if(ord != null)//there is opened order
+            {
+                OrderedSeat os = _mapper.Map<LockSeatDTO, OrderedSeat>(orderDTO);
+                os.OrderId = ord.Id;
+                OrderedSeat orderedSeat = await _repository.addOrderedSeat(os);
+                return _mapper.Map<OrderedSeat, OrderedSeatReadDTO>(orderedSeat);
+            }
+            else
+            {
+                Order order= new Order();
+                order.UserId = orderDTO.UserId;
+                order.OrderDate = DateTime.Now;
+                order.Price = 0;
+                order = await _repository.addOrder(order);
+                return _mapper.Map<OrderedSeat, OrderedSeatReadDTO>(order.OrderedSeats.FirstOrDefault(o=>o.OrderId==order.Id));
+            }
+
+            //    Order order = await _repository.getOrderByOrderesSeatId(orderDTO.OrderdSeatId);
+            //if(order.UserId==orderDTO.UserId && order.OrderedSeats.Where(o => o.Status == 1)!=null){
+
+            //}
+        }
+
+
     }
 }

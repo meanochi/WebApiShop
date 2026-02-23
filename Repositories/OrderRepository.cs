@@ -1,10 +1,7 @@
-﻿using Entities;
+﻿using DTOs;
+using Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data;
 
 namespace Repositories
 {
@@ -25,6 +22,7 @@ namespace Repositories
             return await _context.Orders
                 .Include(i => i.User)
                 .Include(c => c.OrderedSeats)
+                .Include(c => c.OrderedSeats).ThenInclude(s => s.Section)
                 .Where(u => u.UserId == userId).ToListAsync();
         }
                 
@@ -52,6 +50,49 @@ namespace Repositories
             return order;
         }
 
+
+        public async Task<Order?> getOrderByOrderesSeatId(int seatId)
+        {
+            OrderedSeat? seat = await  _context.OrderedSeats.Include(o=>o.Order).FirstOrDefaultAsync(s => s.Id == seatId);
+            if (seat == null)
+                return null;
+            return seat.Order;
+        }
+
+        public async Task<Order> Checkout(CheckoutDTO orderToUpdate)
+        {
+            List<Order> ordForUser = await getOrdersForUser(orderToUpdate.UserId);
+            Order ord = ordForUser.FirstOrDefault(o => o.OrderedSeats.Where(o => o.Status == 1) != null);
+            decimal? sum = ord.OrderedSeats.Sum(o=>o.Section.Price);
+            ord.Price = (double) sum;
+            ord.OrderDate = DateTime.Now;
+            foreach (var item in ord.OrderedSeats)
+            {
+                item.Status = 2;
+                _context.OrderedSeats.Update(item);
+            }
+
+            _context.Orders.Update(ord);
+            await _context.SaveChangesAsync();
+            return ord;
+        }
+
+        public async Task<int> unLockSeat(int id)
+        {
+            OrderedSeat ord =  await _context.OrderedSeats.FirstOrDefaultAsync(u=>u.Id ==id);
+            _context.OrderedSeats.Remove(ord);
+            int rows = await _context.SaveChangesAsync();
+            return rows;
+        }
+        public async Task<OrderedSeat> addOrderedSeat(OrderedSeat orderedSeat)
+        {
+            await _context.OrderedSeats.AddAsync(orderedSeat);
+            Section s= await _context.Sections.FirstOrDefaultAsync(o => o.Id == orderedSeat.SectionId);
+            orderedSeat.ShowId = s.ShowId;
+            await _context.SaveChangesAsync();
+            Order order= await getOrderByOrderesSeatId(orderedSeat.Id);
+            return order.OrderedSeats.FirstOrDefault(o => o.Id == orderedSeat.Id);
+        }
         //public async Task deleteOrder(int id)
         //{
         //    await _context.Orders.ExecuteDeleteAsync(await .getOrderById(id));

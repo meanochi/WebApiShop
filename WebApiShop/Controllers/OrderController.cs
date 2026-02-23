@@ -56,15 +56,48 @@ namespace WebApiShop.Controllers
         }
 
         // PUT api/<OrderController>/5
-        [HttpPut("{id}")]
-        public async Task<ActionResult<OrderDTO>> Put(int id, [FromBody] OrderUpdateDTO orderToUpdat)
+        //[HttpPut("{id}")]
+        //public async Task<ActionResult<OrderDTO>> Put(int id, [FromBody] OrderUpdateDTO orderToUpdat)
+        //{
+        //    OrderDTO order = await _service.updateOrder(orderToUpdat,id);
+        //    if(order == null)
+        //        return BadRequest();
+        //    return Ok(order);
+        //}
+
+        [HttpPost("lock")]
+        public async Task<ActionResult<OrderedSeatReadDTO>> LockSeat([FromBody] LockSeatDTO orderDTO)
         {
-            OrderDTO order = await _service.updateOrder(orderToUpdat,id);
-            if(order == null)
+            OrderedSeatReadDTO newOrderDTO = await _service.LockSeat(orderDTO);
+            if (newOrderDTO == null)
                 return BadRequest();
-            return Ok(order);
+            return CreatedAtAction(nameof(Get), new { newOrderDTO.Id }, orderDTO);
         }
 
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> UnLockseat(int id, int userId)
+        {
+
+            int? rowsAffected = await _service.UnLockseat(id, userId);
+            if (rowsAffected == null)
+                return Unauthorized();
+            if (rowsAffected > 0)
+            {
+                return NoContent();
+            }
+            return BadRequest();
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<OrderDTO>> Checkout([FromBody] CheckoutDTO orderToUpdate)
+        {
+            OrderDTO order = await _service.Checkout(orderToUpdate);
+            if (order == null)
+                return BadRequest("Password is too weak");
+            else
+                return Ok(order);
+        }
         //// DELETE api/<OrderController>/5
         //[HttpDelete("{id}")]
         //public void Delete(int id)

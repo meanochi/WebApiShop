@@ -13,8 +13,6 @@ public partial class Section
 
     public int ShowId { get; set; }
 
-    public int SectionType { get; set; }
-
     public virtual ICollection<OrderedSeat> OrderedSeats { get; set; } = new List<OrderedSeat>();
 
     public virtual Show Show { get; set; }

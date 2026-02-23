@@ -30,6 +30,7 @@ namespace Services
             CreateMap<ShowUpdateDTO, Show>();
             CreateMap<OrderedSeat, OrderedSeatReadDTO>();
             CreateMap<OrderUpdateDTO, Order>();
+            CreateMap<LockSeatDTO, OrderedSeat>();
 
         }
     }
