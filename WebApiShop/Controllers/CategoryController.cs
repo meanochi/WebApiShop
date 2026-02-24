@@ -1,13 +1,7 @@
-﻿using AutoMapper;
-using DTOs;
+﻿using DTOs;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
-using Repositories;
 using Services;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WebApiShop.Controllers
 {
@@ -15,8 +9,8 @@ namespace WebApiShop.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        ICategoryService _service;
-        IMapper _mapper;
+        private readonly ICategoryService _service;
+        private readonly IMapper _mapper;
 
         public CategoryController(ICategoryService service, IMapper mapper)
         {
