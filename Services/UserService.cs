@@ -2,18 +2,18 @@
 using DTOs;
 using Entities;
 using Repositories;
-using System.Text.Json;
-using Zxcvbn;
+
 namespace Services
 {
     public class UserService : IUserService
     {
-        IPasswordService _passService;
-        IUserRepository _repository;
-        IMapper _mapper;
-        public UserService(IPasswordService passService, IUserRepository repository, IMapper mapper)
+        private readonly IPasswordService _passwordService;
+        private readonly IUserRepository _repository;
+        private readonly IMapper _mapper;
+
+        public UserService(IPasswordService passwordService, IUserRepository repository, IMapper mapper)
         {
-            _passService = passService;
+            _passwordService = passwordService;
             _repository = repository;
             _mapper = mapper;
         }
@@ -27,7 +27,7 @@ namespace Services
 
         public async Task<UserReadDTO> addUser(UserCreateDTO user)
         {
-            if (_passService.getStrengthByPassword(user.Password).Strength < 2)
+            if (_passwordService.getStrengthByPassword(user.Password).Strength < 2)
                 return null;
             User newUser = _mapper.Map<UserCreateDTO, User>(user);
             newUser = await _repository.addUser(newUser);
@@ -37,13 +37,14 @@ namespace Services
 
         public async Task<UserReadDTO> UpdateUser(UserUpdateDTO userToUpdate)
         {
-            if (_passService.getStrengthByPassword(userToUpdate.Password).Strength < 2)
+            if (_passwordService.getStrengthByPassword(userToUpdate.Password).Strength < 2)
                 return null;
             User user = _mapper.Map<UserUpdateDTO, User>(userToUpdate);
             user = await _repository.UpdateUser(user);
             UserReadDTO userDTO = _mapper.Map<User, UserReadDTO>(user);
             return userDTO;
         }
+
         public async Task<UserReadDTO> Login(UserLoginDTO user)
         {
             User loginUser = _mapper.Map<UserLoginDTO, User>(user);
@@ -51,6 +52,5 @@ namespace Services
             UserReadDTO logged = _mapper.Map<User, UserReadDTO>(loginUser);
             return logged;
         }
-
     }
 }

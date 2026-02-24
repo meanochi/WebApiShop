@@ -1,10 +1,6 @@
-﻿using AutoMapper;
-using DTOs;
+﻿using DTOs;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 using Services;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WebApiShop.Controllers
 {
@@ -12,7 +8,7 @@ namespace WebApiShop.Controllers
     [ApiController]
     public class OrderController : ControllerBase
     {
-        IOrderService _service;
+        private readonly IOrderService _service;
 
         public OrderController(IOrderService service)
         {
