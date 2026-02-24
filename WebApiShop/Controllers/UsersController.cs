@@ -1,6 +1,8 @@
-﻿using Entities;
-using Services;
+﻿using AutoMapper;
+using DTOs;
+using Entities;
 using Microsoft.AspNetCore.Mvc;
+using Services;
 using System.Text.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -11,11 +13,12 @@ namespace WebApiShop.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private IUserService _userService;
-
-        public UsersController(IUserService userService)
+        IUserService _userService;
+        IMapper _mapper;
+        public UsersController(IUserService userService, IMapper mapper)
         {
             _userService = userService;
+            _mapper = mapper;
         }
 
 
@@ -28,37 +31,45 @@ namespace WebApiShop.Controllers
 
         // GET api/<UsersController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> Get(int id)
+        public async Task<ActionResult<UserReadDTO>> Get(int id)
         {
-            User user = await _userService.GetUserById(id);
+            UserReadDTO user = await _userService.getUserById(id);
             if(user == null)
-                return NotFound();
+                return NoContent();
             return Ok(user);
         }
         
         // POST api/<UsersController>
-        [HttpPost]
-        public async  Task<ActionResult<User>> Post([FromBody] User user)
+        [HttpPost("user")]
+        public async  Task<ActionResult<UserReadDTO>> POST([FromBody] UserCreateDTO user)
         {
-            user = await _userService.AddUser(user);
-            if (user == null)
+           UserReadDTO newUser = await _userService.addUser(user);
+            if (newUser == null)
                 return BadRequest("Password is too weak");
-            return CreatedAtAction(nameof(Get), new {user.Id }, user);
+            return CreatedAtAction(nameof(Get), new { newUser.Id }, newUser);
         }
 
         // PUT api/<UsersController>/5
         [HttpPut("{id}")]
-        public async Task<ActionResult<User>> Put([FromBody] User userToUpdate,int id)
+        public async Task<ActionResult<UserReadDTO>> PUT([FromBody] UserUpdateDTO userToUpdate,int id)
         {
-            userToUpdate.Id = id;
-            userToUpdate = await _userService.UpdateUser(userToUpdate);
-            if (userToUpdate == null)
+            UserReadDTO user = await _userService.UpdateUser(userToUpdate);
+            if (user == null)
                 return BadRequest("Password is too weak");
             else
-                return Ok(userToUpdate);
+                return Ok(user);
 
 
         }
+        [HttpPost("loginUser")]
+        public async Task<ActionResult<UserReadDTO>> GetLogin([FromBody] UserLoginDTO loginUser)
+        {
+            UserReadDTO user = await _userService.Login(loginUser);
+            if (user == null)
+                return NoContent();
+            return Ok(user);
+        }
+
 
         //// DELETE api/<UsersController>/5
         //[HttpDelete("{id}")]

@@ -7,9 +7,9 @@ namespace Entities;
 
 public partial class Category
 {
-    public int CategoryId { get; set; }
+    public int Id { get; set; }
 
-    public string CategoryName { get; set; }
+    public string Name { get; set; }
 
-    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+    public virtual ICollection<Show> Shows { get; set; } = new List<Show>();
 }

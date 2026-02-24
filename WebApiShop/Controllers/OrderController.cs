@@ -1,5 +1,7 @@
-﻿using Entities;
+﻿using AutoMapper;
+using DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -17,37 +19,85 @@ namespace WebApiShop.Controllers
             _service = service;
         }
 
-        //// GET: api/<OrderController>
-        //[HttpGet]
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
+        [HttpGet]
+        public async Task<ActionResult<List<OrderDTO>>> GetAllOrders()
+        {
+            List<OrderDTO> orders = await _service.getAllOrders();
+            if (orders == null || orders.Count == 0)
+                return NoContent();
+            return Ok(orders);
+        }
 
         // GET api/<OrderController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Order>> Get(int id)
+        public async Task<ActionResult<OrderDTO>> Get(int id)
         {
-            return await _service.getOrderById(id);
+            OrderDTO order = await _service.getOrderById(id);
+            return Ok(order);
         }
-
+        [HttpGet("userId")]
+        public async Task<ActionResult<List<OrderDTO>>> GetForUser(int id)
+        {
+            List<OrderDTO> orders = await _service.getOrdersForUser(id);
+            if (orders == null || orders.Count == 0)
+                return NoContent();
+            return Ok(orders);
+        }
         // POST api/<OrderController>
         [HttpPost]
-        public async Task<ActionResult<Order>> Post([FromBody] Order order)
+        public async Task<ActionResult<OrderDTO>> Post([FromBody] OrderCreateDTO orderDTO)
         {
-            order = await _service.addOrder(order);
-            if (order == null)
-                return NoContent();
-            return Ok(order);
-        
+            
+            OrderDTO newOrderDTO = await _service.addOrder(orderDTO);
+            if (newOrderDTO == null)
+                return BadRequest();
+            return CreatedAtAction(nameof(Get), new { newOrderDTO.Id }, orderDTO);
+
         }
 
-        //// PUT api/<OrderController>/5
+        // PUT api/<OrderController>/5
         //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
+        //public async Task<ActionResult<OrderDTO>> Put(int id, [FromBody] OrderUpdateDTO orderToUpdat)
         //{
+        //    OrderDTO order = await _service.updateOrder(orderToUpdat,id);
+        //    if(order == null)
+        //        return BadRequest();
+        //    return Ok(order);
         //}
 
+        [HttpPost("lock")]
+        public async Task<ActionResult<OrderedSeatReadDTO>> LockSeat([FromBody] LockSeatDTO orderDTO)
+        {
+            OrderedSeatReadDTO newOrderDTO = await _service.LockSeat(orderDTO);
+            if (newOrderDTO == null)
+                return BadRequest();
+            return CreatedAtAction(nameof(Get), new { newOrderDTO.Id }, orderDTO);
+        }
+
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> UnLockseat(int id, int userId)
+        {
+
+            int? rowsAffected = await _service.UnLockseat(id, userId);
+            if (rowsAffected == null)
+                return Unauthorized();
+            if (rowsAffected > 0)
+            {
+                return NoContent();
+            }
+            return BadRequest();
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<OrderDTO>> Checkout([FromBody] CheckoutDTO orderToUpdate)
+        {
+            OrderDTO order = await _service.Checkout(orderToUpdate);
+            if (order == null)
+                return BadRequest("Password is too weak");
+            else
+                return Ok(order);
+        }
         //// DELETE api/<OrderController>/5
         //[HttpDelete("{id}")]
         //public void Delete(int id)

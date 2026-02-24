@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,16 +11,16 @@ namespace Repositories
 {
     public class CategoryRepository : ICategoryRepository
     {
-        WebApiShop_329084941Context _context;
-        public CategoryRepository(WebApiShop_329084941Context webApiShop_329084941Context)
+        ShowsCenterContext _context;
+        public CategoryRepository(ShowsCenterContext ShowsCenterContext)
         {
-            _context = webApiShop_329084941Context;
+            _context = ShowsCenterContext;
         }
         public async Task<List<Category>> getAllCategories()
         {
             return await _context.Categories.ToListAsync();
         }
-        public async Task<Category> getCategorieById(int id)
+        public async Task<Category> getCategoryById(int id)
         {
             return await _context.Categories.FindAsync(id);
         }
@@ -29,5 +30,12 @@ namespace Repositories
             await _context.SaveChangesAsync();
             return category;
         }
+        public async Task<int> Delete(int id)
+        {
+           var item =  await _context.Categories.FindAsync(id);
+           _context.Categories.Remove(item);
+           return await _context.SaveChangesAsync();
+        }
+
     }
 }
