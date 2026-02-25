@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DTOs;
 using Entities;
+using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.AspNetCore.Mvc;
 using Services;
 using System.Text.Json;
@@ -15,10 +16,12 @@ namespace WebApiShop.Controllers
     {
         IUserService _userService;
         IMapper _mapper;
-        public UsersController(IUserService userService, IMapper mapper)
+        IAuth _auth;
+        public UsersController(IUserService userService, IMapper mapper, IAuth auth)
         {
             _userService = userService;
             _mapper = mapper;
+            _auth = auth;
         }
 
 
@@ -70,6 +73,11 @@ namespace WebApiShop.Controllers
             return Ok(user);
         }
 
+        [HttpGet("isManger")]
+        public async Task<Boolean> IsManager(int id)
+        {
+            return await _auth.IsManager(id);
+        }
 
         //// DELETE api/<UsersController>/5
         //[HttpDelete("{id}")]
