@@ -60,6 +60,13 @@ namespace Services
             IEnumerable<ShowReadDTO> showsDTO = _mapper.Map< IEnumerable<Show>, IEnumerable<ShowReadDTO>>(shows.shows);
             return (showsDTO, shows.total);
         }
-
+        public async Task<int?> Delete(int id, int userId)
+        {
+            if (!await _auth.IsManager(userId))
+            {
+                return null;
+            }
+            return await _repository.Delete(id);
+        }
     }
 }

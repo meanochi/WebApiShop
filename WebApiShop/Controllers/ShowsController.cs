@@ -59,10 +59,24 @@ namespace WebApiShop.Controllers
         }
 
         // DELETE api/<ShowsController>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id, int userId)
+        {
+            var item = await _showService.getShowById(id);
+
+            if (item == null)
+            {
+                return NotFound();
+            }
+            int? rowsAffected = await _showService.Delete(id, userId);
+            if (rowsAffected == null)
+                return Unauthorized();
+            if (rowsAffected > 0)
+            {
+                return NoContent();
+            }
+            return BadRequest();
+        }
 
         // GET: api/<ShowsController>
         //[HttpGet]

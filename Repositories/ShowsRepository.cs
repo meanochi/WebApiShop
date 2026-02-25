@@ -85,7 +85,12 @@ namespace Repositories
             .ToListAsync();
             return (shows, total);
         }
-
+        public async Task<int> Delete(int id)
+        {
+            var item = await _context.Categories.FindAsync(id);
+            _context.Categories.Remove(item);
+            return await _context.SaveChangesAsync();
+        }
 
         //public async Task deleteShow(int id)
         //{
