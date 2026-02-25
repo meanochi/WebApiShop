@@ -19,5 +19,14 @@ namespace Repositories
         {
             return await _context.Sections.Where(s => s.ShowId == showId).ToListAsync();
         }
+        public async Task<Section> addSection(Section section)
+        {
+            await _context.Sections.AddAsync(section);
+            await _context.SaveChangesAsync();
+            if (getSectionsByShowId(section.ShowId) != null)
+                return section;
+            else
+                return null;
+        }
     }
 }

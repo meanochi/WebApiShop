@@ -24,6 +24,7 @@ namespace Services
             CreateMap<Provider, ProviderReadDTO>();
             CreateMap<ProviderCreateDTO, Provider> ();
             CreateMap<Section, SectionReadDTO>();
+            CreateMap<SectionCreateDTO, Section>();
             CreateMap<Show, ShowReadDTO>();
             CreateMap<ShowCreateDTO, Show>();
             CreateMap<Show, ShowCreateDTO>();

@@ -54,29 +54,27 @@ namespace Repositories
                         && (filters.audiences == null || filters.audiences.Length == 0 || filters.audiences.Any(a => show.Audience.Trim().Contains(a.Trim())))
                         && (filters.sectors == null || filters.sectors.Length == 0 || filters.sectors.Any(s => show.Sector.Contains(s.Trim()))))
                             .OrderBy(show => show.Sections.Min(s => s.Price)).Include(s => s.Provider).Include(s => s.Category);
-            // בתוך getAllShows בשרת
-            //if (!string.IsNullOrEmpty(filters.sortField))
-            //{
-            //    switch (filters.sortField.ToLower())
-            //    {
-            //        case "price":
-            //            query = (filters.sortOrder == 1)
-            //                ? query.OrderBy(s => s.Sections.Any() ? s.Sections.Min(x => x.Price) : 0)
-            //                : query.OrderByDescending(s => s.Sections.Any() ? s.Sections.Min(x => x.Price) : 0);
-            //            break;
+            if (!string.IsNullOrEmpty(filters.sortField))
+            {
+                switch (filters.sortField.ToLower())
+                {
+                    case "price":
+                        if (filters.sortOrder == 1)
+                            query = query.OrderBy(show => show.Sections.Min(s => s.Price)).Include(s => s.Provider).Include(s => s.Category);
+                        else
+                            query = query.OrderByDescending(show => show.Sections.Min(s => s.Price)).Include(s => s.Provider).Include(s => s.Category);
+                        break;
 
-            //        case "popularity":
-            //            // בהנחה שפופולריות נמדדת לפי כמות המקומות שנתפסו או מאפיין קיים ב-Show
-            //            query = (filters.sortOrder == 1)
-            //                ? query.OrderBy(s => s.Orders.Count())
-            //                : query.OrderByDescending(s => s.Orders.Count());
-            //            break;
+                    case "popularity":
+                        // בהנחה שפופולריות נמדדת לפי כמות המקומות שנתפסו או מאפיין קיים ב-Show
+                        query = query.OrderByDescending(show => show.OrderedSeats.Count(c=>c.ShowId==show.Id)).Include(s => s.Provider).Include(s => s.Category);
+                        break;
 
-            //        case "title":
-            //            query = (filters.sortOrder == 1) ? query.OrderBy(s => s.Title) : query.OrderByDescending(s => s.Title);
-            //            break;
-            //    }
-            //}
+                    case "title":
+                        query = query = query.OrderBy(show => show.Title).Include(s => s.Provider).Include(s => s.Category);
+                        break;
+                }
+            }
 
             //Console.WriteLine(query.ToQueryString());
             var total = await query.CountAsync();

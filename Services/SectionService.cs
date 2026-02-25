@@ -25,5 +25,13 @@ namespace Services
             List<SectionReadDTO> sectionDTOs = _mapper.Map<List<Section>, List<SectionReadDTO>>(sections);
             return sectionDTOs;
         }
+
+        public async Task<SectionReadDTO> addSection(SectionCreateDTO sectionCreateDTO)
+        {
+            Section section = _mapper.Map<SectionCreateDTO, Section>(sectionCreateDTO);
+            section = await _sectionRepository.addSection(section);
+            SectionReadDTO sectionReadDTO = _mapper.Map < Section, SectionReadDTO > (section);
+            return sectionReadDTO;
+        }
     }
 }

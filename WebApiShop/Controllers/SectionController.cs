@@ -40,11 +40,15 @@ namespace WebApiShop.Controllers
             return Ok(sections);
         }
 
-        //// POST api/<SectionController>
-        //[HttpPost]
-        //public void Post([FromBody] string value)
-        //{
-        //}
+        //POST api/<SectionController>
+        [HttpPost]
+        public async Task<ActionResult<SectionReadDTO>> Post([FromBody] SectionCreateDTO section)
+        {
+            SectionReadDTO newSection = await _sectionService.addSection(section);
+            if (newSection == null)
+                return BadRequest();
+            return CreatedAtAction(nameof(Get), new { newSection.Id }, newSection);
+        }
 
         //// PUT api/<SectionController>/5
         //[HttpPut("{id}")]
