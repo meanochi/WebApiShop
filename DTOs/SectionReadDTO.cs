@@ -12,6 +12,7 @@ namespace DTOs
         int Id,
         decimal Price,
         int showId,
+        int sectionType,
         ICollection<OrderedSeat> OrderedSeats
     );
 }

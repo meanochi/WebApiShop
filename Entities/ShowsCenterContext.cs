@@ -110,6 +110,7 @@ public partial class ShowsCenterContext : DbContext
 
             entity.Property(e => e.Price).HasColumnType("money");
             entity.Property(e => e.ShowId).HasColumnName("Show_id");
+            entity.Property(e => e.SectionType).HasColumnName("Section_type");
 
             entity.HasOne(d => d.Show).WithMany(p => p.Sections)
                 .HasForeignKey(d => d.ShowId)

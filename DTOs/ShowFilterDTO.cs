@@ -16,5 +16,7 @@ namespace DTOs
         public int[] categoryIdS { get; set; } = Array.Empty<int>();
         public string[] sectors { get; set; } = Array.Empty<string>();
         public string[] audiences { get; set; } = Array.Empty<string>();
+        public string? sortField { get; set; }
+        public int sortOrder { get; set; } = 1;
     };
 }

@@ -48,20 +48,43 @@ namespace Repositories
 
             var query = _context.Shows.Where(show =>
                         (filters.description == null ? (true) : (show.Title.Contains(filters.description)))
-                        && ((filters.minPrice == null) ? (true) : (show.Sections.Min(s=>s.Price) >= filters.minPrice))
-                        && ((filters.maxPrice == null) ? (true) : (show.Sections.Max(s => s.Price) <= filters.maxPrice))
+                        && ((filters.minPrice == null) ? (true) : show.Sections.Any() && (show.Sections.Min(s=>s.Price) >= filters.minPrice))
+                        && ((filters.maxPrice == null) ? (true) : show.Sections.Any() && (show.Sections.Max(s => s.Price) <= filters.maxPrice))
                         && (filters.categoryIdS == null || filters.categoryIdS.Length == 0 || filters.categoryIdS.Contains(show.CategoryId))
-                        && (filters.audiences == null || filters.audiences.Length == 0 || filters.audiences.Contains(show.Audience))
-                        && (filters.sectors == null || filters.sectors.Length == 0 || filters.sectors.Contains(show.Sector)))
+                        && (filters.audiences == null || filters.audiences.Length == 0 || filters.audiences.Any(a => show.Audience.Trim().Contains(a.Trim())))
+                        && (filters.sectors == null || filters.sectors.Length == 0 || filters.sectors.Any(s => show.Sector.Contains(s.Trim()))))
                             .OrderBy(show => show.Sections.Min(s => s.Price)).Include(s => s.Provider).Include(s => s.Category);
+            // בתוך getAllShows בשרת
+            //if (!string.IsNullOrEmpty(filters.sortField))
+            //{
+            //    switch (filters.sortField.ToLower())
+            //    {
+            //        case "price":
+            //            query = (filters.sortOrder == 1)
+            //                ? query.OrderBy(s => s.Sections.Any() ? s.Sections.Min(x => x.Price) : 0)
+            //                : query.OrderByDescending(s => s.Sections.Any() ? s.Sections.Min(x => x.Price) : 0);
+            //            break;
+
+            //        case "popularity":
+            //            // בהנחה שפופולריות נמדדת לפי כמות המקומות שנתפסו או מאפיין קיים ב-Show
+            //            query = (filters.sortOrder == 1)
+            //                ? query.OrderBy(s => s.Orders.Count())
+            //                : query.OrderByDescending(s => s.Orders.Count());
+            //            break;
+
+            //        case "title":
+            //            query = (filters.sortOrder == 1) ? query.OrderBy(s => s.Title) : query.OrderByDescending(s => s.Title);
+            //            break;
+            //    }
+            //}
 
             //Console.WriteLine(query.ToQueryString());
+            var total = await query.CountAsync();
             List<Show> shows = await query.Skip((filters.position - 1) * filters.skip)
             .Take(filters.skip)
             .Include(show => show.Category)
             .Include(show => show.Sections)
             .ToListAsync();
-            var total = await query.CountAsync();
             return (shows, total);
         }
 
