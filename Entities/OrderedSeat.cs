@@ -17,7 +17,7 @@ public partial class OrderedSeat
 
     public int OrderId { get; set; }
 
-    public int Status { get; set; }
+    public int Status { get; set; } = 1;
 
     public int ShowId { get; set; }
 
