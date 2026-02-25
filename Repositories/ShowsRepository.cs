@@ -25,7 +25,12 @@ namespace Repositories
 
         public async Task<Show> getShowById(int id)
         {
-            return await _context.Shows.Include(s=>s.Provider).Include(s=>s.Category).Include(s=>s.Sections).ThenInclude(s=>s.OrderedSeats).FirstOrDefaultAsync(o => o.Id == id);
+            return await _context.Shows
+                .Include(s => s.Provider)
+                .Include(s => s.Category)
+                .Include(s => s.Sections)
+                    .ThenInclude(d => d.OrderedSeats)
+                .FirstOrDefaultAsync(o => o.Id == id);
         }
         public async Task<Show> addShow(Show show)
         {
