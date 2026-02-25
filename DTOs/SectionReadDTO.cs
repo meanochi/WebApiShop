@@ -13,6 +13,6 @@ namespace DTOs
         decimal Price,
         int showId,
         int sectionType,
-        ICollection<OrderedSeat> OrderedSeats
+        ICollection<OrderedSeatReadDTO> OrderedSeats
     );
 }
