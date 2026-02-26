@@ -19,6 +19,7 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IProviderRepository, ProviderRepository>();
 builder.Services.AddScoped<ISectionRepository, SectionRepository>();
 builder.Services.AddScoped<IShowsRepository, ShowsRepository>();
+builder.Services.AddScoped<IPasswordResetRepository, PasswordResetRepository>();
 //builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -36,6 +37,13 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IProviderService, ProviderService>();
 builder.Services.AddScoped<ISectionService, SectionService>();
 builder.Services.AddScoped<IShowService, ShowService>();
+builder.Services.Configure<ForgotPasswordServiceOptions>(
+    builder.Configuration.GetSection("PasswordReset"));
+builder.Services.Configure<EmailSenderOptions>(
+    builder.Configuration.GetSection("Email"));
+builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddScoped<IForgotPasswordService, ForgotPasswordService>();
+
 //builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddDbContext<ShowsCenterContext>(option=>option.UseSqlServer(
     "Data Source=racheli;Initial Catalog=ShowsCenter;Integrated Security=True;Pooling=False;Trust Server Certificate=True;"

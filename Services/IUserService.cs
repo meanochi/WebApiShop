@@ -7,7 +7,7 @@ namespace Services
     {
         Task<UserReadDTO> addUser(UserCreateDTO user);
         Task<UserReadDTO> getUserById(int id);
-        Task<UserReadDTO> UpdateUser(UserUpdateDTO userToUpdate);
+        Task<UserReadDTO> UpdateUser(UserUpdateDTO userToUpdate, int id);
         Task<UserReadDTO> Login(UserLoginDTO user);
     }
 }
