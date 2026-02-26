@@ -35,11 +35,13 @@ namespace Services
             return userDTO;
         }
 
-        public async Task<UserReadDTO> UpdateUser(UserUpdateDTO userToUpdate)
+        public async Task<UserReadDTO> UpdateUser(UserUpdateDTO userToUpdate, int id)
         {
-            if (_passService.getStrengthByPassword(userToUpdate.Password).Strength < 2)
-                return null;
+            if(userToUpdate.Password!="")
+                if (_passService.getStrengthByPassword(userToUpdate.Password).Strength < 2)
+                    return null;
             User user = _mapper.Map<UserUpdateDTO, User>(userToUpdate);
+            user.Id = id;
             user = await _repository.UpdateUser(user);
             UserReadDTO userDTO = _mapper.Map<User, UserReadDTO>(user);
             return userDTO;

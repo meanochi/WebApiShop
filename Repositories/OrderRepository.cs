@@ -53,7 +53,9 @@ namespace Repositories
 
         public async Task<Order?> getOrderByOrderesSeatId(int seatId)
         {
-            OrderedSeat? seat = await  _context.OrderedSeats.Include(o=>o.Order).ThenInclude(u=>u.UserId).FirstOrDefaultAsync(s => s.Id == seatId);
+            OrderedSeat? seat = await  _context.OrderedSeats.Include(o=>o.Order)
+                //.ThenInclude(u=>u.UserId)
+                .FirstOrDefaultAsync(s => s.Id == seatId);
             if (seat == null)
                 return null;
             return seat.Order;

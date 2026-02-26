@@ -7,7 +7,7 @@ namespace DTOs
         int Row, 
         int Col, 
         int Status,  
-        int userId,
+        //int userId,
         string ShowTitle, 
         string ShowImgUrl, 
         string ShowDate, 

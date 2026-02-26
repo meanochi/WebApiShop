@@ -17,11 +17,13 @@ namespace WebApiShop.Controllers
         IUserService _userService;
         IMapper _mapper;
         IAuth _auth;
-        public UsersController(IUserService userService, IMapper mapper, IAuth auth)
+        private readonly IForgotPasswordService _forgotPassword;
+        public UsersController(IUserService userService, IMapper mapper, IAuth auth, IForgotPasswordService forgotPassword)
         {
             _userService = userService;
             _mapper = mapper;
             _auth = auth;
+            _forgotPassword = forgotPassword;
         }
 
 
@@ -56,7 +58,7 @@ namespace WebApiShop.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<UserReadDTO>> PUT([FromBody] UserUpdateDTO userToUpdate,int id)
         {
-            UserReadDTO user = await _userService.UpdateUser(userToUpdate);
+            UserReadDTO user = await _userService.UpdateUser(userToUpdate, id);
             if (user == null)
                 return BadRequest("Password is too weak");
             else
@@ -84,5 +86,23 @@ namespace WebApiShop.Controllers
         //public void Delete(int id)
         //{
         //}
+
+        [HttpPost("forgot-password")]
+        public async Task<ActionResult<ForgotPasswordResponse>> ForgotPassword([FromBody] ForgotPasswordRequest request, CancellationToken ct)
+        {
+            var result = await _forgotPassword.RequestCodeAsync(request.Email ?? "", ct);
+            return Ok(new ForgotPasswordResponse { Sent = result.Sent, Message = result.Message });
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<ActionResult<ResetPasswordResponse>> ResetPassword([FromBody] ResetPasswordRequest request, CancellationToken ct)
+        {
+            var result = await _forgotPassword.ResetPasswordAsync(
+                request.Email ?? "",
+                request.Code ?? "",
+                request.NewPassword ?? "",
+                ct);
+            return Ok(new ResetPasswordResponse { Success = result.Success, Message = result.Message });
+        }
     }
 }

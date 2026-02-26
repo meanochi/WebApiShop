@@ -3,6 +3,9 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Entities;
+using Microsoft.Extensions.Configuration;
 
 namespace Entities;
 
@@ -37,6 +40,8 @@ public partial class ShowsCenterContext : DbContext
     public virtual DbSet<Show> Shows { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
+
+    public virtual DbSet<PasswordResetCode> PasswordResetCodes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -185,8 +190,16 @@ public partial class ShowsCenterContext : DbContext
                 .HasColumnName("phone_number");
         });
 
+        modelBuilder.Entity<PasswordResetCode>(entity =>
+        {
+            entity.HasIndex(p => new { p.Email, p.Code });
+
+        });
+
         OnModelCreatingPartial(modelBuilder);
     }
+
+    
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
