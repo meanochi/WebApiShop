@@ -14,6 +14,8 @@ builder.Services.AddDbContext<ShowsCenterContext>(options =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+
 builder.Services.AddScoped<IProviderRepository, ProviderRepository>();
 builder.Services.AddScoped<ISectionRepository, SectionRepository>();
 builder.Services.AddScoped<IShowsRepository, ShowsRepository>();
@@ -30,12 +32,13 @@ builder.Services.AddScoped<IAuth, Auth>();
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+
 builder.Services.AddScoped<IProviderService, ProviderService>();
 builder.Services.AddScoped<ISectionService, SectionService>();
 builder.Services.AddScoped<IShowService, ShowService>();
 //builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddDbContext<ShowsCenterContext>(option=>option.UseSqlServer(
-    "Data Source=michal;Initial Catalog=ShowsCenter;Integrated Security=True;Pooling=False;Trust Server Certificate=True;"
+    "Data Source=racheli;Initial Catalog=ShowsCenter;Integrated Security=True;Pooling=False;Trust Server Certificate=True;"
     ));
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

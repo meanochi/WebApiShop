@@ -50,7 +50,7 @@ namespace Services
             Order order = _mapper.Map<OrderCreateDTO, Order>(orderCDTO);
             order.OrderDate = DateTime.Now;
             order = await _repository.addOrder(order);
-            OrderDTO orderDTO = _mapper.Map < Order, OrderDTO > (order);
+            OrderDTO orderDTO = _mapper.Map<Order, OrderDTO>(order);
             return orderDTO;
         }
 
@@ -74,7 +74,7 @@ namespace Services
         public async Task<int> UnLockseat(int id, int userId)
         {
             Order order = await _repository.getOrderByOrderesSeatId(id);
-            if (order.UserId == userId) 
+            if (order.UserId == userId)
                 return await _repository.unLockSeat(id);
             return 0;
         }
@@ -82,8 +82,8 @@ namespace Services
         public async Task<OrderedSeatReadDTO> LockSeat(LockSeatDTO orderDTO)
         {
             List<Order> ordForUser = await _repository.getOrdersForUser(orderDTO.UserId);
-            Order ord= ordForUser.FirstOrDefault(o=>o.OrderedSeats.Where(o=>o.Status==1)!=null);
-            if(ord != null)//there is opened order
+            Order ord = ordForUser.FirstOrDefault(o => o.OrderedSeats.Where(o => o.Status == 1) != null);
+            if (ord != null)//there is opened order
             {
                 OrderedSeat os = _mapper.Map<LockSeatDTO, OrderedSeat>(orderDTO);
                 os.OrderId = ord.Id;
@@ -92,12 +92,12 @@ namespace Services
             }
             else
             {
-                Order order= new Order();
+                Order order = new Order();
                 order.UserId = orderDTO.UserId;
                 order.OrderDate = DateTime.Now;
                 order.Price = 0;
                 order = await _repository.addOrder(order);
-                return _mapper.Map<OrderedSeat, OrderedSeatReadDTO>(order.OrderedSeats.FirstOrDefault(o=>o.OrderId==order.Id));
+                return _mapper.Map<OrderedSeat, OrderedSeatReadDTO>(order.OrderedSeats.FirstOrDefault(o => o.OrderId == order.Id));
             }
 
             //    Order order = await _repository.getOrderByOrderesSeatId(orderDTO.OrderdSeatId);
@@ -105,7 +105,15 @@ namespace Services
 
             //}
         }
+        public async Task<List<OrderedSeatReadDTO>> GetOrderedSeatsForShow(int showId)
+        {
+            List<OrderedSeat> orderedSeats = await _repository.getOrderedSeatsByShowId(showId);
+            return _mapper.Map<List<OrderedSeat>, List<OrderedSeatReadDTO>>(orderedSeats);
+        }
+        //public async Task<OrderedSeat> addOrderedSeat(OrderedSeat orderedSeat)
+        //{
+        //    return await _repository.addOrderedSeat(orderedSeat);
 
-
+        //}
     }
 }

@@ -1,93 +1,62 @@
 ﻿using DTOs;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services;
 
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
 namespace WebApiShop.Controllers
 {
-    public class OrderedSeatController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class OrderedSeatController : ControllerBase
     {
+            IOrderService _service;
 
-        IOrderedSeatsService _service;
+            public OrderedSeatController(IOrderService service)
+            {
+                _service = service;
+            }
 
-        public OrderedSeatController(IOrderedSeatsService service)
+            // GET: api/<OrderedSeatController>
+            [HttpGet("showId/{showId}")]
+            public async Task<ActionResult<List<OrderedSeatReadDTO>>> GetForShow(int showId)
+            {
+                var result = await _service.GetOrderedSeatsForShow(showId);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result);
+            }
+    [HttpGet]
+        public IEnumerable<string> Get()
         {
-            _service = service;
-        }
-        // GET: OrderedSeatController
-        [HttpGet("showid/{showId}")]
-        public Task<ActionResult<List<OrderedSeatReadDTO>>> getOrderedSeatsForShow(int showId)
-        {
-            List<OrderedSeatReadDTO> orderedSeats = 
-        }
-
-        // GET: OrderedSeatController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: OrderedSeatController/Create
-        public ActionResult Create()
-        {
-            return View();
+            return new string[] { "value1", "value2" };
         }
 
-        // POST: OrderedSeatController/Create
+        // GET api/<OrderedSeatController>/5
+        [HttpGet("{id}")]
+        public string Get(int id)
+        {
+            return "value";
+        }
+
+        // POST api/<OrderedSeatController>
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public void Post([FromBody] string value)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
 
-        // GET: OrderedSeatController/Edit/5
-        public ActionResult Edit(int id)
+        // PUT api/<OrderedSeatController>/5
+        [HttpPut("{id}")]
+        public void Put(int id, [FromBody] string value)
         {
-            return View();
         }
 
-        // POST: OrderedSeatController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        // DELETE api/<OrderedSeatController>/5
+        [HttpDelete("{id}")]
+        public void Delete(int id)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: OrderedSeatController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: OrderedSeatController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
     }
 }
