@@ -25,13 +25,13 @@ namespace Repositories
                 .Include(c => c.OrderedSeats).ThenInclude(s => s.Section)
                 .Where(u => u.UserId == userId).ToListAsync();
         }
-                
+
         public async Task<Order> getOrderById(int id)
         {
             return await _context.Orders
                 .Include(i => i.User)
-                .Include(c=>c.OrderedSeats)
-                .FirstOrDefaultAsync(o=>o.Id == id);
+                .Include(c => c.OrderedSeats)
+                .FirstOrDefaultAsync(o => o.Id == id);
         }
         public async Task<Order> addOrder(Order order)
         {
@@ -65,8 +65,8 @@ namespace Repositories
         {
             List<Order> ordForUser = await getOrdersForUser(orderToUpdate.UserId);
             Order ord = ordForUser.FirstOrDefault(o => o.OrderedSeats.Where(o => o.Status == 1) != null);
-            decimal? sum = ord.OrderedSeats.Sum(o=>o.Section.Price);
-            ord.Price = (double) sum;
+            decimal? sum = ord.OrderedSeats.Sum(o => o.Section.Price);
+            ord.Price = (double)sum;
             ord.OrderDate = DateTime.Now;
             foreach (var item in ord.OrderedSeats)
             {
@@ -81,7 +81,7 @@ namespace Repositories
 
         public async Task<int> unLockSeat(int id)
         {
-            OrderedSeat ord =  await _context.OrderedSeats.FirstOrDefaultAsync(u=>u.Id ==id);
+            OrderedSeat ord = await _context.OrderedSeats.FirstOrDefaultAsync(u => u.Id == id);
             _context.OrderedSeats.Remove(ord);
             int rows = await _context.SaveChangesAsync();
             return rows;
@@ -89,10 +89,10 @@ namespace Repositories
         public async Task<OrderedSeat> addOrderedSeat(OrderedSeat orderedSeat)
         {
             await _context.OrderedSeats.AddAsync(orderedSeat);
-            Section s= await _context.Sections.FirstOrDefaultAsync(o => o.Id == orderedSeat.SectionId);
+            Section s = await _context.Sections.FirstOrDefaultAsync(o => o.Id == orderedSeat.SectionId);
             orderedSeat.ShowId = s.ShowId;
             await _context.SaveChangesAsync();
-            Order order= await getOrderByOrderesSeatId(orderedSeat.Id);
+            Order order = await getOrderByOrderesSeatId(orderedSeat.Id);
             return order.OrderedSeats.FirstOrDefault(o => o.Id == orderedSeat.Id);
         }
         //public async Task deleteOrder(int id)
@@ -100,5 +100,10 @@ namespace Repositories
         //    await _context.Orders.ExecuteDeleteAsync(await .getOrderById(id));
         //    await _context.SaveChangesAsync();
         //}
+        public async Task<List<OrderedSeat>> getOrderedSeatsByShowId(int showId)
+        {
+            return await _context.OrderedSeats.Include(s=>s.Show).Include(s=>s.Section).Include(s => s.Order).Where(s => s.ShowId == showId).ToListAsync();
+
+        }
     }
 }

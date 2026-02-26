@@ -10,6 +10,7 @@ namespace Services
         Task<OrderDTO> Checkout(CheckoutDTO orderToUpdate);
         Task<List<OrderDTO>> getAllOrders();
         Task<OrderDTO> getOrderById(int id);
+        Task<List<OrderedSeatReadDTO>> GetOrderedSeatsForShow(int showId);
         Task<List<OrderDTO>> getOrdersForUser(int id);
         Task<OrderedSeatReadDTO> LockSeat(LockSeatDTO orderDTO);
         Task<int> UnLockseat(int id, int userId);

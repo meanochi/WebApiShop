@@ -1,93 +1,62 @@
-﻿//using DTOs;
-//using Microsoft.AspNetCore.Http;
-//using Microsoft.AspNetCore.Mvc;
-//using Services;
+﻿using DTOs;
+using Microsoft.AspNetCore.Mvc;
+using Services;
 
-//namespace WebApiShop.Controllers
-//{
-//    public class OrderedSeatController : Controller
-//    {
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-//        IOrderedSeatsService _service;
+namespace WebApiShop.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class OrderedSeatController : ControllerBase
+    {
+            IOrderService _service;
 
-//        public OrderedSeatController(IOrderedSeatsService service)
-//        {
-//            _service = service;
-//        }
-//        // GET: OrderedSeatController
-//        [HttpGet("showid/{showId}")]
-//        public Task<ActionResult<List<OrderedSeatReadDTO>>> getOrderedSeatsForShow(int showId)
-//        {
-//            List<OrderedSeatReadDTO> orderedSeats = 
-//        }
+            public OrderedSeatController(IOrderService service)
+            {
+                _service = service;
+            }
 
-//        // GET: OrderedSeatController/Details/5
-//        public ActionResult Details(int id)
-//        {
-//            return View();
-//        }
+            // GET: api/<OrderedSeatController>
+            [HttpGet("showId/{showId}")]
+            public async Task<ActionResult<List<OrderedSeatReadDTO>>> GetForShow(int showId)
+            {
+                var result = await _service.GetOrderedSeatsForShow(showId);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result);
+            }
+    [HttpGet]
+        public IEnumerable<string> Get()
+        {
+            return new string[] { "value1", "value2" };
+        }
 
-//        // GET: OrderedSeatController/Create
-//        public ActionResult Create()
-//        {
-//            return View();
-//        }
+        // GET api/<OrderedSeatController>/5
+        [HttpGet("{id}")]
+        public string Get(int id)
+        {
+            return "value";
+        }
 
-//        // POST: OrderedSeatController/Create
-//        [HttpPost]
-//        [ValidateAntiForgeryToken]
-//        public ActionResult Create(IFormCollection collection)
-//        {
-//            try
-//            {
-//                return RedirectToAction(nameof(Index));
-//            }
-//            catch
-//            {
-//                return View();
-//            }
-//        }
+        // POST api/<OrderedSeatController>
+        [HttpPost]
+        public void Post([FromBody] string value)
+        {
+        }
 
-//        // GET: OrderedSeatController/Edit/5
-//        public ActionResult Edit(int id)
-//        {
-//            return View();
-//        }
+        // PUT api/<OrderedSeatController>/5
+        [HttpPut("{id}")]
+        public void Put(int id, [FromBody] string value)
+        {
+        }
 
-//        // POST: OrderedSeatController/Edit/5
-//        [HttpPost]
-//        [ValidateAntiForgeryToken]
-//        public ActionResult Edit(int id, IFormCollection collection)
-//        {
-//            try
-//            {
-//                return RedirectToAction(nameof(Index));
-//            }
-//            catch
-//            {
-//                return View();
-//            }
-//        }
-
-//        // GET: OrderedSeatController/Delete/5
-//        public ActionResult Delete(int id)
-//        {
-//            return View();
-//        }
-
-//        // POST: OrderedSeatController/Delete/5
-//        [HttpPost]
-//        [ValidateAntiForgeryToken]
-//        public ActionResult Delete(int id, IFormCollection collection)
-//        {
-//            try
-//            {
-//                return RedirectToAction(nameof(Index));
-//            }
-//            catch
-//            {
-//                return View();
-//            }
-//        }
-//    }
-//}
+        // DELETE api/<OrderedSeatController>/5
+        [HttpDelete("{id}")]
+        public void Delete(int id)
+        {
+        }
+    }
+}
