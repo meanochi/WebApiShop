@@ -28,7 +28,18 @@ namespace WebApiShop.Controllers
                 }
                 return Ok(result);
             }
-    [HttpGet]
+
+        [HttpGet("userId/{userId}")]
+        public async Task<ActionResult<List<OrderedSeatReadDTO>>> GetForUser(int userId)
+        {
+            var result = await _service.GetOrderedSeatsForUser(userId);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+        [HttpGet]
         public IEnumerable<string> Get()
         {
             return new string[] { "value1", "value2" };

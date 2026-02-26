@@ -53,7 +53,7 @@ namespace Repositories
 
         public async Task<Order?> getOrderByOrderesSeatId(int seatId)
         {
-            OrderedSeat? seat = await _context.OrderedSeats.Include(o => o.Order).ThenInclude(u => u.UserId).FirstOrDefaultAsync(s => s.Id == seatId);
+            OrderedSeat? seat = await _context.OrderedSeats.Include(o => o.Order).FirstOrDefaultAsync(s => s.Id == seatId);
             if (seat == null)
                 return null;
             return seat.Order;
@@ -101,6 +101,12 @@ namespace Repositories
         public async Task<List<OrderedSeat>> getOrderedSeatsByShowId(int showId)
         {
             return await _context.OrderedSeats.Include(s=>s.Show).Include(s=>s.Section).Include(s => s.Order).Where(s => s.ShowId == showId).ToListAsync();
+
+        }
+
+        public async Task<List<OrderedSeat>> getOrderedSeatsByUserId(int userId)
+        {
+            return await _context.OrderedSeats.Include(s => s.Show).Include(s => s.Section).Include(s => s.Order).Where(s=>s.Order.UserId == userId).ToListAsync();
 
         }
     }

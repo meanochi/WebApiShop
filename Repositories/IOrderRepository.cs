@@ -12,6 +12,7 @@ namespace Repositories
         Task<Order> getOrderById(int id);
         Task<Order?> getOrderByOrderesSeatId(int seatId);
         Task<List<OrderedSeat>> getOrderedSeatsByShowId(int showId);
+        Task<List<OrderedSeat>> getOrderedSeatsByUserId(int userId);
         Task<List<Order>> getOrdersForUser(int user);
         Task<int> unLockSeat(int id);
         Task<Order> updateOrder(Order order);
