@@ -68,10 +68,17 @@ namespace WebApiShop.Controllers
         [HttpPost("lock")]
         public async Task<ActionResult<OrderedSeatReadDTO>> LockSeat([FromBody] LockSeatDTO orderDTO)
         {
-            OrderedSeatReadDTO newOrderDTO = await _service.LockSeat(orderDTO);
-            if (newOrderDTO == null)
-                return BadRequest();
-            return CreatedAtAction(nameof(Get), new { newOrderDTO.Id }, orderDTO);
+            try
+            {
+                OrderedSeatReadDTO newOrderDTO = await _service.LockSeat(orderDTO);
+                if (newOrderDTO == null)
+                    return BadRequest();
+                return CreatedAtAction(nameof(Get), new { newOrderDTO.Id }, orderDTO);
+            }
+            catch(InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
         }
 
 

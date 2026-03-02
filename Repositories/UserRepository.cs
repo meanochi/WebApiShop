@@ -14,7 +14,7 @@ namespace Repositories
         }
         public async Task<User> getUserById(int id)
         {
-            return await _context.Users.Include(c => c.Orders).ThenInclude(d => d.OrderedSeats)
+            return await _context.Users.Include(c => c.Orders).ThenInclude(d => d.OrderedSeats).ThenInclude(o=>o.Show).ThenInclude(o=>o.Sections)
                                         .FirstOrDefaultAsync(u => u.Id == id);
         }
 

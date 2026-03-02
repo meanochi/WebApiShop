@@ -86,6 +86,9 @@ namespace Repositories
         }
         public async Task<OrderedSeat> addOrderedSeat(OrderedSeat orderedSeat)
         {
+            var exists = await _context.OrderedSeats.AnyAsync(s =>
+                s.ShowId == orderedSeat.ShowId && s.Row == orderedSeat.Row && s.Col == orderedSeat.Col && s.SectionId == orderedSeat.SectionId && s.Status != 0);
+            if (exists) throw new InvalidOperationException("Seat already taken");
             await _context.OrderedSeats.AddAsync(orderedSeat);
             Section s = await _context.Sections.FirstOrDefaultAsync(o => o.Id == orderedSeat.SectionId);
             orderedSeat.ShowId = s.ShowId;
@@ -100,13 +103,20 @@ namespace Repositories
         //}
         public async Task<List<OrderedSeat>> getOrderedSeatsByShowId(int showId)
         {
-            return await _context.OrderedSeats.Include(s=>s.Show).Include(s=>s.Section).Include(s => s.Order).Where(s => s.ShowId == showId).ToListAsync();
-
+            return await _context.OrderedSeats
+                .Include(s=>s.Show)
+                .Include(s=>s.Section)
+                .Include(s => s.Order)
+                .ThenInclude(u=>u.User).Where(s => s.ShowId == showId).ToListAsync();
         }
 
         public async Task<List<OrderedSeat>> getOrderedSeatsByUserId(int userId)
         {
-            return await _context.OrderedSeats.Include(s => s.Show).Include(s => s.Section).Include(s => s.Order).Where(s=>s.Order.UserId == userId).ToListAsync();
+            return await _context.OrderedSeats
+                .Include(s => s.Show)
+                .Include(s => s.Section)
+                .Include(s => s.Order)
+                .Where(s=>s.Order.UserId == userId).ToListAsync();
 
         }
     }

@@ -30,6 +30,8 @@ namespace Repositories
                 .Include(s => s.Category)
                 .Include(s => s.Sections)
                     .ThenInclude(d => d.OrderedSeats)
+                    .ThenInclude(o=>o.Order)
+                    .ThenInclude(u=>u.User)
                 .FirstOrDefaultAsync(o => o.Id == id);
         }
         public async Task<Show> addShow(Show show)
