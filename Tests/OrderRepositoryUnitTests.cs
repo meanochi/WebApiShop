@@ -24,10 +24,26 @@ namespace Test
             return mockContext;
         }
 
-        // Tear-up for unit tests
+        //// Tear-up for unit tests
+        //public Task InitializeAsync()
+        //{
+        //    _mockContext = GetMockContext(new List<Order>(), x => x.Orders);
+        //    _repo = new OrderRepository(_mockContext.Object);
+        //    return Task.CompletedTask;
+        //}
+
         public Task InitializeAsync()
         {
-            _mockContext = GetMockContext(new List<Order>(), x => x.Orders);
+            // 1. יוצרים רשימות דמה לכל הטבלאות שהקוד הולך לגשת אליהן
+            var mockOrders = new List<Order>();
+            var mockShows = new List<Show>(); // הוספת רשימת Shows
+
+            _mockContext = new Mock<ShowsCenterContext>();
+
+            // 2. מגדירים ל-Mock איך להגיב כשניגשים לכל אחת מהטבלאות
+            _mockContext.Setup(x => x.Orders).ReturnsDbSet(mockOrders);
+            _mockContext.Setup(x => x.Shows).ReturnsDbSet(mockShows); // שורת המפתח!
+
             _repo = new OrderRepository(_mockContext.Object);
             return Task.CompletedTask;
         }
@@ -69,7 +85,7 @@ namespace Test
             var repo = new OrderRepository(mockContext.Object);
             var user = new User { Id = 10 };
 
-            var result = await repo.getOrdersForUser(user);
+            var result = await repo.getOrdersForUser(user.Id);
 
             Assert.Equal(2, result.Count);
             Assert.All(result, o => Assert.Equal(10, o.UserId));
@@ -109,7 +125,7 @@ namespace Test
             var repo = new OrderRepository(mockContext.Object);
 
             order.Price = 99.9;
-            var result = await repo.updateOrder(order, order.Id);
+            var result = await repo.updateOrder(order);
 
             Assert.Equal(99.9, result.Price);
             mockContext.Verify(m => m.SaveChangesAsync(default), Times.Once);

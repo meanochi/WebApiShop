@@ -104,7 +104,7 @@ public partial class ShowsCenterContext : DbContext
                 .HasMaxLength(30)
                 .IsFixedLength();
             entity.Property(e => e.ProfileImgUrl)
-                .HasMaxLength(int.MaxValue)
+                .HasMaxLength(2000)
                 .IsFixedLength()
                 .HasColumnName("Profile_img_url");
         });
@@ -138,7 +138,7 @@ public partial class ShowsCenterContext : DbContext
                 .HasMaxLength(50)
                 .IsFixedLength();
             entity.Property(e => e.ImgUrl)
-                .HasMaxLength(int.MaxValue)
+                .HasMaxLength(2000)
                 .IsFixedLength()
                 .HasColumnName("Img_url");
             entity.Property(e => e.ProviderId).HasColumnName("Provider_id");
