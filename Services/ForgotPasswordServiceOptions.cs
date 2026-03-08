@@ -60,9 +60,14 @@ namespace Services
             {
                 await _email.SendAsync(normalized, subject, body, ct);
             }
-            catch (Exception)
+            //catch (Exception)
+            //{
+            //    return new ForgotPasswordResult(false, "Failed to send email. Please try again later.");
+            //}
+            catch (Exception ex)
             {
-                return new ForgotPasswordResult(false, "Failed to send email. Please try again later.");
+                // זה יחזיר לך את השגיאה האמיתית למסך באנגולר
+                return new ForgotPasswordResult(false, "שגיאה: " + ex.Message);
             }
 
             return new ForgotPasswordResult(true);

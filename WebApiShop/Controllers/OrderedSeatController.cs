@@ -39,11 +39,11 @@ namespace WebApiShop.Controllers
             }
             return Ok(result);
         }
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        //[HttpGet]
+        //public IEnumerable<string> Get()
+        //{
+        //    return new string[] { "value1", "value2" };
+        //}
 
         // GET api/<OrderedSeatController>/5
         [HttpGet("{id}")]

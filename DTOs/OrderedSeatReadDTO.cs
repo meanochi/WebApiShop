@@ -8,6 +8,7 @@ namespace DTOs
         int Row, 
         int Col, 
         int Status,  
+        int orderId,
         int OrderUserId,
         int SectionId,
         int SectionSectionType,
