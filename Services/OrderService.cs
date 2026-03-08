@@ -82,7 +82,7 @@ namespace Services
         public async Task<OrderedSeatReadDTO> LockSeat(LockSeatDTO orderDTO)
         {
             List<Order> ordForUser = await _repository.getOrdersForUser(orderDTO.UserId);
-            Order ord = ordForUser.FirstOrDefault(o => o.OrderedSeats.Where(o => o.Status == 1) != null);
+            Order ord = ordForUser.FirstOrDefault(o => o.OrderedSeats.Any(o => o.Status == 1));
             if (ord != null)//there is opened order
             {
                 OrderedSeat os = _mapper.Map<LockSeatDTO, OrderedSeat>(orderDTO);
@@ -97,13 +97,13 @@ namespace Services
                 order.OrderDate = DateTime.Now;
                 order.Price = 0;
                 order = await _repository.addOrder(order);
+
+                OrderedSeat os = _mapper.Map<LockSeatDTO, OrderedSeat>(orderDTO);
+                os.OrderId = order.Id;
+
+                OrderedSeat orderedSeat = await _repository.addOrderedSeat(os);
                 return _mapper.Map<OrderedSeat, OrderedSeatReadDTO>(order.OrderedSeats.FirstOrDefault(o => o.OrderId == order.Id));
             }
-
-            //    Order order = await _repository.getOrderByOrderesSeatId(orderDTO.OrderdSeatId);
-            //if(order.UserId==orderDTO.UserId && order.OrderedSeats.Where(o => o.Status == 1)!=null){
-
-            //}
         }
         public async Task<List<OrderedSeatReadDTO>> GetOrderedSeatsForShow(int showId)
         {

@@ -62,7 +62,11 @@ namespace Repositories
         public async Task<Order> Checkout(CheckoutDTO orderToUpdate)
         {
             List<Order> ordForUser = await getOrdersForUser(orderToUpdate.UserId);
-            Order ord = ordForUser.FirstOrDefault(o => o.OrderedSeats.Where(o => o.Status == 1) != null);
+            Order ord = ordForUser.FirstOrDefault(o => o.OrderedSeats.Any(s => s.Status == 1));
+            if (ord == null)
+            {
+                return null; 
+            }
             decimal? sum = ord.OrderedSeats.Sum(o => o.Section.Price);
             ord.Price = (double)sum;
             ord.OrderDate = DateTime.Now;

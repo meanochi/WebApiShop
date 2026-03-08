@@ -20,21 +20,16 @@ namespace Repositories
 
         public async Task<User> addUser(User user)
         {
-            
            await _context.Users.AddAsync(user);
             try
             {
                 await _context.SaveChangesAsync();
+                return user;
             }
             catch(DbUpdateException ex)
             {
                 return null;
             }
-            if (getUserById(user.Id) != null)
-                return user;
-            else
-                return null;
-
         }
 
         public async Task<User> UpdateUser(User userToUpdate)
