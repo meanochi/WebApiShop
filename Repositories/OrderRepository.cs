@@ -53,10 +53,11 @@ namespace Repositories
 
         public async Task<Order?> getOrderByOrderesSeatId(int seatId)
         {
-            OrderedSeat? seat = await _context.OrderedSeats.Include(o => o.Order).FirstOrDefaultAsync(s => s.Id == seatId);
-            if (seat == null)
+            OrderedSeat ordSeat = await _context.OrderedSeats.FirstOrDefaultAsync(s => s.Id == seatId);
+            Order order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == ordSeat.OrderId);
+            if (order == null)
                 return null;
-            return seat.Order;
+            return order;
         }
 
         public async Task<Order> Checkout(CheckoutDTO orderToUpdate)

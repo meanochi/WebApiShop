@@ -26,6 +26,7 @@ namespace Repositories
         public async Task<Show> getShowById(int id)
         {
             return await _context.Shows
+                .AsNoTracking()
                 .Include(s => s.Provider)
                 .Include(s => s.Category)
                 .Include(s => s.Sections)
@@ -45,7 +46,20 @@ namespace Repositories
         }
         public async Task<Show> updateOrder(Show show, int id)
         {
-            _context.Shows.Update(show);
+            // חיפוש האם יש כבר מופע בזיכרון שעוקבים אחריו עם אותו ID
+            var local = _context.Set<Show>()
+                .Local
+                .FirstOrDefault(entry => entry.Id.Equals(id));
+
+            // אם נמצא כזה - ננתק אותו מה-Context
+            if (local != null)
+            {
+                _context.Entry(local).State = EntityState.Detached;
+            }
+
+            // עכשיו אפשר לעדכן את המופע החדש ללא התנגשות
+            _context.Entry(show).State = EntityState.Modified;
+
             await _context.SaveChangesAsync();
             return show;
         }
@@ -73,7 +87,6 @@ namespace Repositories
                         break;
 
                     case "popularity":
-                        // בהנחה שפופולריות נמדדת לפי כמות המקומות שנתפסו או מאפיין קיים ב-Show
                         query = query.OrderByDescending(show => show.OrderedSeats.Count(c=>c.ShowId==show.Id)).Include(s => s.Provider).Include(s => s.Category);
                         break;
 
@@ -94,8 +107,17 @@ namespace Repositories
         }
         public async Task<int> Delete(int id)
         {
-            var item = await _context.Categories.FindAsync(id);
-            _context.Categories.Remove(item);
+            var item = await _context.Shows.FindAsync(id);
+            foreach (var section in item.Sections)
+            {
+                foreach (var orderedSeat in section.OrderedSeats)
+                {
+                    _context.OrderedSeats.Remove(orderedSeat);
+                }
+                _context.Sections.Remove(section);
+
+            }
+            _context.Shows.Remove(item);
             return await _context.SaveChangesAsync();
         }
 
