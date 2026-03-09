@@ -37,7 +37,7 @@ namespace Repositories
         {
             await _context.Orders.AddAsync(order);
             await _context.SaveChangesAsync();
-            if (getOrderById(order.Id) != null)
+            if (await getOrderById(order.Id) != null)
                 return order;
             else
                 return null;

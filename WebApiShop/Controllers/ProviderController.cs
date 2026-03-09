@@ -35,7 +35,7 @@ namespace WebApiShop.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProviderReadDTO>> Get(int id)
         {
-            ProviderReadDTO provider= await _providerService.getProviderById(id);
+            ProviderReadDTO provider = await _providerService.getProviderById(id);
             if (provider == null)
                 return NoContent();
             return Ok(provider);
@@ -57,10 +57,14 @@ namespace WebApiShop.Controllers
         //{
         //}
 
-        //// DELETE api/<ProviderController>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+        // DELETE api/<ProviderController>/5
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id, int userId)
+        {
+            bool deleted = await _providerService.deleteProvider(id, userId);
+            if (!deleted)
+                return BadRequest();
+            return NoContent();
+        }
     }
 }

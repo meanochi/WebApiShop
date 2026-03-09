@@ -47,5 +47,12 @@ namespace Services
             return providerDTO;
         }
 
+        public async Task<bool> deleteProvider(int id, int userId)
+        {
+            if (!await _auth.IsManager(userId))
+                return false;
+            return await _repository.deleteProvider(id);
+        }
+
     }
 }

@@ -17,7 +17,7 @@ namespace Repositories
         }
         public async Task<Provider> getProviderById(int id)
         {
-            return await _context.Providers.FirstOrDefaultAsync(p => p.Id == id);
+            return await _context.Providers.Include(s=>s.Shows).FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<List<Provider>> getAllProviders()
@@ -29,8 +29,20 @@ namespace Repositories
         {
             await _context.Providers.AddAsync(provider);
             await _context.SaveChangesAsync();
-            var saved = await getProviderById(provider.Id); 
+            var saved = await getProviderById(provider.Id);
             return saved != null ? provider : null;
+        }
+
+        public async Task<bool> deleteProvider(int id)
+        {
+            Provider providerToDelete = await getProviderById(id);
+            if (providerToDelete == null)
+                return false;
+            if (providerToDelete.Shows.Count() > 0)
+                return false;
+            _context.Providers.Remove(providerToDelete);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }
