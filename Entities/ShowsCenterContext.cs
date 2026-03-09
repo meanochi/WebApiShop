@@ -24,7 +24,7 @@ public partial class ShowsCenterContext : DbContext
         if (!optionsBuilder.IsConfigured)
         {
             // 🚨 ודא ששורה זו קיימת!
-            optionsBuilder.UseSqlServer("Data Source=michal;Initial Catalog=ShowsCenter;Integrated Security=True;Pooling=False;Trust Server Certificate=True;MultipleActiveResultSets=true");
+            optionsBuilder.UseSqlServer("Data Source=racheli;Initial Catalog=ShowsCenter;Integrated Security=True;Pooling=False;Trust Server Certificate=True;MultipleActiveResultSets=true");
         }
     }
     public virtual DbSet<Category> Categories { get; set; }

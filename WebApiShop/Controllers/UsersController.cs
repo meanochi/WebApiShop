@@ -18,12 +18,14 @@ namespace WebApiShop.Controllers
         IMapper _mapper;
         IAuth _auth;
         private readonly IForgotPasswordService _forgotPassword;
-        public UsersController(IUserService userService, IMapper mapper, IAuth auth, IForgotPasswordService forgotPassword)
+        private readonly IOrderConfirmationEmailService _orderConfirmationEmail;
+        public UsersController(IUserService userService, IMapper mapper, IAuth auth, IForgotPasswordService forgotPassword, IOrderConfirmationEmailService orderConfirmationEmail)
         {
             _userService = userService;
             _mapper = mapper;
             _auth = auth;
             _forgotPassword = forgotPassword;
+            _orderConfirmationEmail = orderConfirmationEmail;
         }
 
 
@@ -104,5 +106,19 @@ namespace WebApiShop.Controllers
                 ct);
             return Ok(new ResetPasswordResponse { Success = result.Success, Message = result.Message });
         }
+
+        [HttpPost("send-order-confirmation")]
+        public async Task<ActionResult<SendOrderConfirmationResponse>> SendOrderConfirmation(
+            [FromBody] SendOrderConfirmationRequest request,
+             CancellationToken ct)
+        {
+            var result = await _orderConfirmationEmail.SendAsync(request, ct);
+            return Ok(new SendOrderConfirmationResponse
+            {
+                Sent = result.Sent,
+                Message = result.Message
+            });
+        }
+
     }
 }

@@ -14,8 +14,12 @@ namespace Repositories
         }
         public async Task<User> getUserById(int id)
         {
-            return await _context.Users.Include(c => c.Orders).ThenInclude(d => d.OrderedSeats).ThenInclude(o=>o.Show).ThenInclude(o=>o.Sections)
-                                        .FirstOrDefaultAsync(u => u.Id == id);
+            return await _context.Users.Include(c => c.Orders)
+                .ThenInclude(d => d.OrderedSeats)
+                .ThenInclude(o=>o.Show)
+                .ThenInclude(o=>o.Sections)
+                .AsSplitQuery()
+                .FirstOrDefaultAsync(u => u.Id == id);
         }
 
         public async Task<User> addUser(User user)

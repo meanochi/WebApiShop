@@ -43,10 +43,11 @@ builder.Services.Configure<EmailSenderOptions>(
     builder.Configuration.GetSection("Email"));
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IForgotPasswordService, ForgotPasswordService>();
+builder.Services.AddScoped<IOrderConfirmationEmailService, OrderConfirmationEmailService>();
 
 //builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddDbContext<ShowsCenterContext>(option=>option.UseSqlServer(
-    "Data Source=michal;Initial Catalog=ShowsCenter;Integrated Security=True;Pooling=False;Trust Server Certificate=True;"
+    "Data Source=racheli;Initial Catalog=ShowsCenter;Integrated Security=True;Pooling=False;Trust Server Certificate=True;"
     ));
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

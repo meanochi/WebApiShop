@@ -91,8 +91,15 @@ namespace Repositories
         }
         public async Task<OrderedSeat> addOrderedSeat(OrderedSeat orderedSeat)
         {
-            var exists = await _context.OrderedSeats.AnyAsync(s =>
-                s.ShowId == orderedSeat.ShowId && s.Row == orderedSeat.Row && s.Col == orderedSeat.Col && s.SectionId == orderedSeat.SectionId && s.Status != 0);
+            var exists = await _context.OrderedSeats
+                .AsNoTracking()
+                .AnyAsync(s =>
+                    s.ShowId == orderedSeat.ShowId 
+                    && s.Row == orderedSeat.Row 
+                    && s.Col == orderedSeat.Col 
+                    && s.SectionId == orderedSeat.SectionId 
+                    && s.Status != 0
+                );
             if (exists) throw new InvalidOperationException("Seat already taken");
             await _context.OrderedSeats.AddAsync(orderedSeat);
             Section s = await _context.Sections.FirstOrDefaultAsync(o => o.Id == orderedSeat.SectionId);
