@@ -9,7 +9,8 @@
 *.user
 *.userosscache
 *.sln.docstates
-WebApiShop_329084941Context.cs
+ShowsCenterContext.cs
+appsettings.Development.json
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
