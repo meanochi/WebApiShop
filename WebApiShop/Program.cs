@@ -9,7 +9,7 @@ using WebApiShop.Middleware;
 
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = builder.Configuration.GetConnectionString("Shows Center");
 builder.Services.AddDbContext<ShowsCenterContext>(options =>
     options.UseSqlServer(connectionString));
 // Add services to the container.
@@ -51,9 +51,7 @@ builder.Services.AddScoped<IOrderConfirmationEmailService, OrderConfirmationEmai
 builder.Services.AddScoped<IRatingService, RatingService>();
 
 //builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddDbContext<ShowsCenterContext>(option=>option.UseSqlServer(
-    "Data Source=michal;Initial Catalog=ShowsCenter;Integrated Security=True;Pooling=False;Trust Server Certificate=True;"
-    ));
+
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Host.UseNLog();
