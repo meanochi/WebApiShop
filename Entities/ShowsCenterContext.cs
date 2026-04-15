@@ -19,14 +19,14 @@ public partial class ShowsCenterContext : DbContext
         : base(options)
     {
     }
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        if (!optionsBuilder.IsConfigured)
-        {
-            // 🚨 ודא ששורה זו קיימת!
-            optionsBuilder.UseSqlServer("Data Source=racheli;Initial Catalog=ShowsCenter;Integrated Security=True;Pooling=False;Trust Server Certificate=True;MultipleActiveResultSets=true");
-        }
-    }
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //{
+    //    if (!optionsBuilder.IsConfigured)
+    //    {
+    //        // 🚨 ודא ששורה זו קיימת!
+    //        optionsBuilder.UseSqlServer("Data Source=michal;Initial Catalog=ShowsCenter;Integrated Security=True;Pooling=False;Trust Server Certificate=True;MultipleActiveResultSets=true");
+    //    }
+    //}
     public virtual DbSet<Category> Categories { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }

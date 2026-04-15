@@ -46,18 +46,15 @@ namespace Repositories
         }
         public async Task<Show> updateOrder(Show show, int id)
         {
-            // חיפוש האם יש כבר מופע בזיכרון שעוקבים אחריו עם אותו ID
             var local = _context.Set<Show>()
                 .Local
                 .FirstOrDefault(entry => entry.Id.Equals(id));
 
-            // אם נמצא כזה - ננתק אותו מה-Context
             if (local != null)
             {
                 _context.Entry(local).State = EntityState.Detached;
             }
 
-            // עכשיו אפשר לעדכן את המופע החדש ללא התנגשות
             _context.Entry(show).State = EntityState.Modified;
 
             await _context.SaveChangesAsync();
@@ -96,7 +93,6 @@ namespace Repositories
                 }
             }
 
-            //Console.WriteLine(query.ToQueryString());
             var total = await query.CountAsync();
             List<Show> shows = await query.Skip((filters.position - 1) * filters.skip)
             .Take(filters.skip)
@@ -107,17 +103,20 @@ namespace Repositories
         }
         public async Task<int> Delete(int id)
         {
-            var item = await _context.Shows.FindAsync(id);
+            var item = await _context.Shows
+                .Include(s => s.Sections)
+                    .ThenInclude(sec => sec.OrderedSeats)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
+            if (item == null) return 0;
+
             foreach (var section in item.Sections)
             {
-                foreach (var orderedSeat in section.OrderedSeats)
-                {
-                    _context.OrderedSeats.Remove(orderedSeat);
-                }
-                _context.Sections.Remove(section);
-
+                _context.OrderedSeats.RemoveRange(section.OrderedSeats);
             }
+            _context.Sections.RemoveRange(item.Sections);
             _context.Shows.Remove(item);
+
             return await _context.SaveChangesAsync();
         }
 

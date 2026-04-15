@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using DTOs;
 using Entities;
+using MediaBrowser.Model.Logging;
+using Microsoft.Extensions.Logging;
 using Repositories;
 using System.Text.Json;
 using Zxcvbn;
@@ -51,6 +53,7 @@ namespace Services
             User loginUser = _mapper.Map<UserLoginDTO, User>(user);
             loginUser = await _repository.Login(loginUser);
             UserReadDTO logged = _mapper.Map<User, UserReadDTO>(loginUser);
+
             return logged;
         }
 

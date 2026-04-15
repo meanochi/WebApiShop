@@ -14,18 +14,20 @@ namespace WebApiShop.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
+        private readonly ILogger<UsersController> _logger;
         IUserService _userService;
         IMapper _mapper;
         IAuth _auth;
         private readonly IForgotPasswordService _forgotPassword;
         private readonly IOrderConfirmationEmailService _orderConfirmationEmail;
-        public UsersController(IUserService userService, IMapper mapper, IAuth auth, IForgotPasswordService forgotPassword, IOrderConfirmationEmailService orderConfirmationEmail)
+        public UsersController(IUserService userService, IMapper mapper, IAuth auth, IForgotPasswordService forgotPassword, IOrderConfirmationEmailService orderConfirmationEmail, ILogger<UsersController> logger)
         {
             _userService = userService;
             _mapper = mapper;
             _auth = auth;
             _forgotPassword = forgotPassword;
             _orderConfirmationEmail = orderConfirmationEmail;
+            _logger = logger;
         }
 
 
@@ -71,6 +73,7 @@ namespace WebApiShop.Controllers
         [HttpPost("loginUser")]
         public async Task<ActionResult<UserReadDTO>> GetLogin([FromBody] UserLoginDTO loginUser)
         {
+            _logger.LogInformation($"Login attemted with email: {loginUser.EmailAddress}, password: {loginUser.Password}");
             UserReadDTO user = await _userService.Login(loginUser);
             if (user == null)
                 return NoContent();
