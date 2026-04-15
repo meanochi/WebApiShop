@@ -1,9 +1,12 @@
 ﻿using System.Text.Json;
 using Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using NLog.Web;
 using Repositories;
 using Services;
+using WebApiShop.Middleware;
+
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -19,6 +22,7 @@ builder.Services.AddScoped<IProviderRepository, ProviderRepository>();
 builder.Services.AddScoped<ISectionRepository, SectionRepository>();
 builder.Services.AddScoped<IShowsRepository, ShowsRepository>();
 builder.Services.AddScoped<IPasswordResetRepository, PasswordResetRepository>();
+builder.Services.AddScoped<IRatingRepository, RatingRepository>();
 //builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -44,6 +48,7 @@ builder.Services.Configure<EmailSenderOptions>(
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IForgotPasswordService, ForgotPasswordService>();
 builder.Services.AddScoped<IOrderConfirmationEmailService, OrderConfirmationEmailService>();
+builder.Services.AddScoped<IRatingService, RatingService>();
 
 //builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddDbContext<ShowsCenterContext>(option=>option.UseSqlServer(
@@ -61,6 +66,9 @@ builder.Services.AddCors(options => {
 });
 
 var app = builder.Build();
+
+app.UseRating();
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();

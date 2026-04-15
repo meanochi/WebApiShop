@@ -40,6 +40,7 @@ public partial class ShowsCenterContext : DbContext
     public virtual DbSet<Show> Shows { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<Rating> Ratings { get; set; }
 
     public virtual DbSet<PasswordResetCode> PasswordResetCodes { get; set; }
 
@@ -194,6 +195,32 @@ public partial class ShowsCenterContext : DbContext
         {
             entity.HasIndex(p => new { p.Email, p.Code });
 
+        });
+
+        modelBuilder.Entity<Rating>(entity =>
+        {
+            entity.HasKey(e => e.RatingId);
+            entity.ToTable("ratings");
+            entity.Property(e => e.RatingId)
+                .HasColumnName("rating_id");
+            entity.Property(e => e.Host)
+                .HasMaxLength(100)
+                .HasColumnName("host");
+            entity.Property(e => e.Method)
+                .HasMaxLength(10) 
+                .HasColumnName("method");
+            entity.Property(e => e.Path)
+                .HasMaxLength(500)
+                .HasColumnName("path");
+            entity.Property(e => e.RecordDate)
+                .HasColumnName("record_date")
+                .HasDefaultValueSql("GETDATE()"); 
+            entity.Property(e => e.Referer)
+                .HasMaxLength(500)
+                .HasColumnName("referer");
+            entity.Property(e => e.UserAgent)
+                .HasMaxLength(1000)
+                .HasColumnName("user_agent");
         });
 
         OnModelCreatingPartial(modelBuilder);
