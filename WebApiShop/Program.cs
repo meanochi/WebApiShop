@@ -6,6 +6,7 @@ using NLog.Web;
 using Repositories;
 using Services;
 using WebApiShop.Middleware;
+using WebApiShop.Middlewares;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,6 +51,9 @@ builder.Services.AddScoped<IForgotPasswordService, ForgotPasswordService>();
 builder.Services.AddScoped<IOrderConfirmationEmailService, OrderConfirmationEmailService>();
 builder.Services.AddScoped<IRatingService, RatingService>();
 
+builder.Services.AddExceptionHandler<ErrorHandlingMiddleware>();
+builder.Services.AddProblemDetails();
+
 //builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddDbContext<ShowsCenterContext>(option=>option.UseSqlServer(
     "Data Source=michal;Initial Catalog=ShowsCenter;Integrated Security=True;Pooling=False;Trust Server Certificate=True;"
@@ -66,6 +70,8 @@ builder.Services.AddCors(options => {
 });
 
 var app = builder.Build();
+
+app.UseExceptionHandler();
 
 app.UseRating();
 
