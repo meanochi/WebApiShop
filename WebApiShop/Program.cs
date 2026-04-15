@@ -10,7 +10,7 @@ using WebApiShop.Middlewares;
 
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("Shows Center");
+var connectionString = builder.Configuration.GetConnectionString("ShowsCenter");
 builder.Services.AddDbContext<ShowsCenterContext>(options =>
     options.UseSqlServer(connectionString));
 // Add services to the container.
