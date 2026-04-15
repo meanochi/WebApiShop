@@ -80,23 +80,23 @@ namespace Services
 
         public async Task SendAsync(string toEmail, string subject, string body, CancellationToken ct = default)
         {
-            // שליפת כתובת IPv4 כדי לעקוף בעיות תקשורת בנטפרי
-            var addresses = await System.Net.Dns.GetHostAddressesAsync(_options.SmtpHost, ct);
-            var ipv4Address = addresses.FirstOrDefault(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
-
-            // הגדרה לסובלנות כלפי תעודת האבטחה של נטפרי
+            // 1. הגדרה לנטפרי
             System.Net.ServicePointManager.ServerCertificateValidationCallback = (s, c, h, e) => true;
 
-            using var client = new System.Net.Mail.SmtpClient(ipv4Address?.ToString() ?? _options.SmtpHost, _options.SmtpPort)
+            // 2. ניקוי רווחים מהסיסמה למקרה שנשארו
+            var cleanPassword = _options.Password.Replace(" ", "").Trim();
+
+            using var client = new System.Net.Mail.SmtpClient(_options.SmtpHost, _options.SmtpPort)
             {
-                EnableSsl = _options.UseSsl, // ודאי שב-JSON זה true
-                UseDefaultCredentials = false, // חובה להגדיר false לפני הגדרת ה-Credentials
+                EnableSsl = true,
+                UseDefaultCredentials = false,
                 DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network,
-                Timeout = 15000
+                Timeout = 20000,
+                // השורה הזו עוזרת ל-Gmail לזהות את החיבור המאובטח נכון בתוך רשת מסוננת
+                TargetName = "STARTTLS/smtp.gmail.com"
             };
 
-            // שימוש בפרטים מה-JSON (appsettings.Development.json)
-            client.Credentials = new System.Net.NetworkCredential(_options.UserName, _options.Password);
+            client.Credentials = new System.Net.NetworkCredential(_options.UserName, cleanPassword);
 
             var mailMessage = new System.Net.Mail.MailMessage
             {
