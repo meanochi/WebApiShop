@@ -52,7 +52,7 @@ builder.Services.AddScoped<IRatingService, RatingService>();
 
 //builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddDbContext<ShowsCenterContext>(option=>option.UseSqlServer(
-    "Data Source=racheli;Initial Catalog=ShowsCenter;Integrated Security=True;Pooling=False;Trust Server Certificate=True;"
+    "Data Source=michal;Initial Catalog=ShowsCenter;Integrated Security=True;Pooling=False;Trust Server Certificate=True;"
     ));
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -78,6 +78,8 @@ if (app.Environment.IsDevelopment())
     });
 }
 app.UseCors();
+
+// ...
 
 app.UseHttpsRedirection();
 

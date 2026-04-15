@@ -32,9 +32,12 @@ namespace Repositories
         }
         public async Task<int> Delete(int id)
         {
-           var item =  await _context.Categories.FindAsync(id);
-           _context.Categories.Remove(item);
-           return await _context.SaveChangesAsync();
+            var item = await _context.Categories.FindAsync(id);
+            if (item.Shows.Count()>0) {
+                return 0;
+            }
+            _context.Categories.Remove(item);
+            return await _context.SaveChangesAsync();
         }
 
     }
