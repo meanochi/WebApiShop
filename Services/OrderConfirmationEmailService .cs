@@ -39,9 +39,10 @@ namespace Services
                 await _emailSender.SendAsync(email, subject, body, ct);
                 return new SendOrderConfirmationResult(true);
             }
-            catch
+            catch (Exception ex)
             {
-                return new SendOrderConfirmationResult(false, "Failed to send confirmation email.");
+                // הציבי כאן Breakpoint כדי לראות מה כתוב בתוך ex.Message
+                return new SendOrderConfirmationResult(false, ex.Message);
             }
         }
 
