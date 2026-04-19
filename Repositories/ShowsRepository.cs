@@ -17,7 +17,6 @@ namespace Repositories
         {
             _context = ShowsCenterContext;
         }
-        //to add filters, sorting, and pagination!!!!!
         public async Task<List<Show>> getAllShows()
         {
             return await _context.Shows.Include(s=>s.Provider).Include(s=>s.Category).ToListAsync();
@@ -120,10 +119,5 @@ namespace Repositories
             return await _context.SaveChangesAsync();
         }
 
-        //public async Task deleteShow(int id)
-        //{
-        //        await _context.Shows.ExecuteDeleteAsync(s => s.Id == id);
-        //        await _context.SaveChangesAsync();
-        //}
     }
 }

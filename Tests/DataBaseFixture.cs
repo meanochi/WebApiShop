@@ -15,14 +15,11 @@ namespace Tests
         {
             _connection = new SqliteConnection("Filename=:memory:");
             _connection.Open();
-
-            // Set up the test database connection and initialize the context
             var options = new DbContextOptionsBuilder<ShowsCenterContext>()
                 .UseSqlite(_connection)
                 .Options;
 
             Context.Database.EnsureCreated();
-            //SeedData();
         }
 
         public void Dispose()

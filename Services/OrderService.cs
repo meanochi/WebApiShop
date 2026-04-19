@@ -116,10 +116,6 @@ namespace Services
             List<OrderedSeat> orderedSeats = await _repository.getOrderedSeatsByUserId(userId);
             return _mapper.Map<List<OrderedSeat>, List<OrderedSeatReadDTO>>(orderedSeats);
         }
-        //public async Task<OrderedSeat> addOrderedSeat(OrderedSeat orderedSeat)
-        //{
-        //    return await _repository.addOrderedSeat(orderedSeat);
 
-        //}
     }
 }

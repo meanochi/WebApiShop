@@ -19,14 +19,6 @@ public partial class ShowsCenterContext : DbContext
         : base(options)
     {
     }
-    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    //{
-    //    if (!optionsBuilder.IsConfigured)
-    //    {
-    //        // 🚨 ודא ששורה זו קיימת!
-    //        optionsBuilder.UseSqlServer("Data Source=michal;Initial Catalog=ShowsCenter;Integrated Security=True;Pooling=False;Trust Server Certificate=True;MultipleActiveResultSets=true");
-    //    }
-    //}
     public virtual DbSet<Category> Categories { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
@@ -52,8 +44,7 @@ public partial class ShowsCenterContext : DbContext
 
             entity.Property(e => e.Name)
                 .IsRequired()
-                .HasMaxLength(20)
-                .IsFixedLength();
+                .HasMaxLength(20);
         });
 
         modelBuilder.Entity<Order>(entity =>
@@ -102,11 +93,9 @@ public partial class ShowsCenterContext : DbContext
 
             entity.Property(e => e.Name)
                 .IsRequired()
-                .HasMaxLength(30)
-                .IsFixedLength();
+                .HasMaxLength(30);
             entity.Property(e => e.ProfileImgUrl)
                 .HasMaxLength(2000)
-                .IsFixedLength()
                 .HasColumnName("Profile_img_url");
         });
 
@@ -130,28 +119,22 @@ public partial class ShowsCenterContext : DbContext
 
             entity.Property(e => e.Audience)
                 .IsRequired()
-                .HasMaxLength(15)
-                .IsFixedLength();
+                .HasMaxLength(15);
             entity.Property(e => e.BeginTime).HasColumnName("Begin_time");
             entity.Property(e => e.EndTime).HasColumnName("End_time");
             entity.Property(e => e.CategoryId).HasColumnName("Category_id");
             entity.Property(e => e.Description)
-                .HasMaxLength(50)
-                .IsFixedLength();
+                .HasMaxLength(50);
             entity.Property(e => e.ImgUrl)
                 .HasMaxLength(2000)
-                .IsFixedLength()
                 .HasColumnName("Img_url");
             entity.Property(e => e.ProviderId).HasColumnName("Provider_id");
             entity.Property(e => e.Sector)
                 .IsRequired()
-                .HasMaxLength(10)
-                .IsFixedLength();
+                .HasMaxLength(10);
             entity.Property(e => e.Title)
                 .IsRequired()
-                .HasMaxLength(20)
-                .IsFixedLength();
-
+                .HasMaxLength(20);
             entity.HasOne(d => d.Category).WithMany(p => p.Shows)
                 .HasForeignKey(d => d.CategoryId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -168,26 +151,21 @@ public partial class ShowsCenterContext : DbContext
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.EmailAddress)
                 .HasMaxLength(30)
-                .IsFixedLength()
                 .HasColumnName("email_address");
             entity.Property(e => e.FirstName)
                 .IsRequired()
                 .HasMaxLength(30)
-                .IsFixedLength()
                 .HasColumnName("first_name");
             entity.Property(e => e.LastName)
                 .IsRequired()
                 .HasMaxLength(30)
-                .IsFixedLength()
                 .HasColumnName("last_name");
             entity.Property(e => e.Password)
                 .IsRequired()
                 .HasMaxLength(15)
-                .IsFixedLength()
                 .HasColumnName("password");
             entity.Property(e => e.PhoneNumber)
                 .HasMaxLength(13)
-                .IsFixedLength()
                 .HasColumnName("phone_number");
         });
 

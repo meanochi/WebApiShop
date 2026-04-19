@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-using AutoMapper;
-using DTOs;
+﻿using AutoMapper;
 using Entities;
 using Microsoft.AspNetCore.Mvc;
 using Services;
@@ -50,12 +48,6 @@ namespace WebApiShop.Controllers
                 return BadRequest();
             return CreatedAtAction(nameof(Get), new { id = createdProvider.Id }, createdProvider);
         }
-
-        //// PUT api/<ProviderController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
 
         // DELETE api/<ProviderController>/5
         [HttpDelete("{id}")]

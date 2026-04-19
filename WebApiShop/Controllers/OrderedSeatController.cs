@@ -10,24 +10,24 @@ namespace WebApiShop.Controllers
     [ApiController]
     public class OrderedSeatController : ControllerBase
     {
-            IOrderService _service;
+        IOrderService _service;
 
-            public OrderedSeatController(IOrderService service)
-            {
-                _service = service;
-            }
+        public OrderedSeatController(IOrderService service)
+        {
+            _service = service;
+        }
 
-            // GET: api/<OrderedSeatController>
-            [HttpGet("showId/{showId}")]
-            public async Task<ActionResult<List<OrderedSeatReadDTO>>> GetForShow(int showId)
+        // GET: api/<OrderedSeatController>
+        [HttpGet("showId/{showId}")]
+        public async Task<ActionResult<List<OrderedSeatReadDTO>>> GetForShow(int showId)
+        {
+            var result = await _service.GetOrderedSeatsForShow(showId);
+            if (result == null)
             {
-                var result = await _service.GetOrderedSeatsForShow(showId);
-                if (result == null)
-                {
-                    return NotFound();
-                }
-                return Ok(result);
+                return NotFound();
             }
+            return Ok(result);
+        }
 
         [HttpGet("userId/{userId}")]
         public async Task<ActionResult<List<OrderedSeatReadDTO>>> GetForUser(int userId)
@@ -39,35 +39,6 @@ namespace WebApiShop.Controllers
             }
             return Ok(result);
         }
-        //[HttpGet]
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
 
-        // GET api/<OrderedSeatController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/<OrderedSeatController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/<OrderedSeatController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<OrderedSeatController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }

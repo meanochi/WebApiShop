@@ -1,10 +1,10 @@
-﻿using System.Net;
-using Microsoft.AspNetCore.Diagnostics;
+﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace WebApiShop.Middlewares
 {
-    public class ErrorHandlingMiddleware: IExceptionHandler
+    public class ErrorHandlingMiddleware : IExceptionHandler
     {
         private readonly ILogger<ErrorHandlingMiddleware> _logger;
 
@@ -18,10 +18,8 @@ namespace WebApiShop.Middlewares
             Exception exception,
             CancellationToken cancellationToken)
         {
-            // רישום השגיאה ללוג הפנימי של השרת
             _logger.LogError(exception, "Exception occurred: {Message}", exception.Message);
 
-            // יצירת תשובה מסודרת למשתמש
             var problemDetails = new ProblemDetails
             {
                 Status = (int)HttpStatusCode.InternalServerError,
@@ -30,7 +28,6 @@ namespace WebApiShop.Middlewares
                 Instance = httpContext.Request.Path
             };
 
-            // הגדרת סוג התוכן כ-JSON ושליחת התשובה
             httpContext.Response.StatusCode = problemDetails.Status.Value;
 
             await httpContext.Response

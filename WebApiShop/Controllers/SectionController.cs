@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using DTOs;
-using Entities;
 using Microsoft.AspNetCore.Mvc;
 using Services;
 
@@ -20,20 +19,12 @@ namespace WebApiShop.Controllers
             _mapper = mapper;
         }
 
-
-        //// GET: api/<SectionController>
-        //[HttpGet]
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
-
         // GET api/<SectionController>/5
         [HttpGet("{id}")]
         public async Task<ActionResult<List<SectionReadDTO>>> Get(int id)
         {
             List<SectionReadDTO> sections = await _sectionService.getSectionsByShowId(id);
-            if(sections == null)
+            if (sections == null)
             {
                 return NoContent();
             }
@@ -50,16 +41,5 @@ namespace WebApiShop.Controllers
             return CreatedAtAction(nameof(Get), new { newSection.Id }, newSection);
         }
 
-        //// PUT api/<SectionController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
-
-        //// DELETE api/<SectionController>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
     }
 }

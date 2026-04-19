@@ -108,11 +108,7 @@ namespace Repositories
             Order order = await getOrderByOrderesSeatId(orderedSeat.Id);
             return order.OrderedSeats.FirstOrDefault(o => o.Id == orderedSeat.Id);
         }
-        //public async Task deleteOrder(int id)
-        //{
-        //    await _context.Orders.ExecuteDeleteAsync(await .getOrderById(id));
-        //    await _context.SaveChangesAsync();
-        //}
+
         public async Task<List<OrderedSeat>> getOrderedSeatsByShowId(int showId)
         {
             return await _context.OrderedSeats

@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
 using DTOs;
-using Entities;
-using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.AspNetCore.Mvc;
 using Services;
-using System.Text.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -30,29 +27,21 @@ namespace WebApiShop.Controllers
             _logger = logger;
         }
 
-
-        //// GET: api/<UsersController>
-        //[HttpGet]
-        //public string Get()
-        //{
-        //    return "value";
-        //}
-
         // GET api/<UsersController>/5
         [HttpGet("{id}")]
         public async Task<ActionResult<UserReadDTO>> Get(int id)
         {
             UserReadDTO user = await _userService.getUserById(id);
-            if(user == null)
+            if (user == null)
                 return NoContent();
             return Ok(user);
         }
-        
+
         // POST api/<UsersController>
         [HttpPost("user")]
-        public async  Task<ActionResult<UserReadDTO>> POST([FromBody] UserCreateDTO user)
+        public async Task<ActionResult<UserReadDTO>> POST([FromBody] UserCreateDTO user)
         {
-           UserReadDTO newUser = await _userService.addUser(user);
+            UserReadDTO newUser = await _userService.addUser(user);
             if (newUser == null)
                 return BadRequest("Password is too weak");
             return CreatedAtAction(nameof(Get), new { newUser.Id }, newUser);
@@ -60,7 +49,7 @@ namespace WebApiShop.Controllers
 
         // PUT api/<UsersController>/5
         [HttpPut("{id}")]
-        public async Task<ActionResult<UserReadDTO>> PUT([FromBody] UserUpdateDTO userToUpdate,int id)
+        public async Task<ActionResult<UserReadDTO>> PUT([FromBody] UserUpdateDTO userToUpdate, int id)
         {
             UserReadDTO user = await _userService.UpdateUser(userToUpdate, id);
             if (user == null)
@@ -85,12 +74,6 @@ namespace WebApiShop.Controllers
         {
             return await _auth.IsManager(id);
         }
-
-        //// DELETE api/<UsersController>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
 
         [HttpPost("forgot-password")]
         public async Task<ActionResult<ForgotPasswordResponse>> ForgotPassword([FromBody] ForgotPasswordRequest request, CancellationToken ct)

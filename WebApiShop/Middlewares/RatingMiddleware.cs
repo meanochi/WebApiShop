@@ -1,9 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
+﻿using Entities;
 using Services;
-using Entities;
-using System;
-using System.Threading.Tasks;
 
 namespace WebApiShop.Middleware
 {

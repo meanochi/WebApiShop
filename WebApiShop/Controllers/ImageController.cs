@@ -17,10 +17,8 @@ public class ImagesController : ControllerBase
         if (file == null || file.Length == 0)
             return BadRequest("קובץ לא תקין");
 
-        // 1. יצירת שם ייחודי לקובץ כדי למנוע דריסת קבצים
         string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
 
-        // 2. הגדרת הנתיב לתיקיית wwwroot/uploads
         string uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
 
         if (!Directory.Exists(uploadsFolder))
@@ -28,13 +26,11 @@ public class ImagesController : ControllerBase
 
         string filePath = Path.Combine(uploadsFolder, fileName);
 
-        // 3. שמירת הקובץ פיזית בשרת
         using (var stream = new FileStream(filePath, FileMode.Create))
         {
             await file.CopyToAsync(stream);
         }
 
-        // 4. החזרת הנתיב היחסי (זה מה שתשמור ב-SQL Server)
         string dbPath = Path.Combine("uploads", fileName);
         return Ok(new { path = dbPath });
     }

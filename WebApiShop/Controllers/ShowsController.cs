@@ -1,5 +1,4 @@
 ﻿using DTOs;
-using Entities;
 using Microsoft.AspNetCore.Mvc;
 using Services;
 
@@ -18,16 +17,6 @@ namespace WebApiShop.Controllers
             _showService = showService;
         }
 
-        ////GET: api/<ShowsController>
-        //[HttpGet]
-        //public async Task<ActionResult<List<ShowReadDTO>>> Get()
-        //{
-        //    List<ShowReadDTO> shows = await _showService.getAllShows();
-        //    if (shows == null)
-        //        return NoContent();
-        //    return Ok(shows);
-        //}
-
         // GET api/<ShowsController>/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ShowReadDTO>> Get(int id)
@@ -42,7 +31,7 @@ namespace WebApiShop.Controllers
         [HttpPost]
         public async Task<ActionResult<ShowReadDTO>> Post([FromBody] ShowCreateDTO show, int userId)
         {
-            ShowReadDTO createdShow = await _showService.addShow(show,userId);
+            ShowReadDTO createdShow = await _showService.addShow(show, userId);
             if (createdShow == null)
                 return BadRequest();
             return CreatedAtAction(nameof(Get), new { createdShow.Id }, createdShow); ;
@@ -78,15 +67,6 @@ namespace WebApiShop.Controllers
             return BadRequest();
         }
 
-        // GET: api/<ShowsController>
-        //[HttpGet]
-        //public async Task<ActionResult<(IEnumerable<ShowReadDTO> shows, int total)>> GetAll(string? description, int? minPrice, int? maxPrice, int skip, int position, [FromQuery] int[] categoryIdS, [FromQuery] string[] sectors, [FromQuery] string[] audiences)
-        //{
-        //    (IEnumerable<ShowReadDTO> shows, int total) shows = await _showService.getAllShows(description, minPrice, maxPrice, skip, position, categoryIdS, sectors, audiences);
-        //    if (shows.shows == null)
-        //        return NoContent();
-        //    return Ok(shows.shows);
-        //}
         [HttpGet]
         public async Task<ActionResult<(IEnumerable<ShowReadDTO> shows, int total)>> GetAll([FromQuery] ShowFilterDTO filters)
         {
