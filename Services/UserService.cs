@@ -2,6 +2,7 @@
 using DTOs;
 using Entities;
 using MediaBrowser.Model.Logging;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Repositories;
 using System.Text.Json;
@@ -10,26 +11,46 @@ namespace Services
 {
     public class UserService : IUserService
     {
-        IPasswordService _passService;
-        IUserRepository _repository;
-        IMapper _mapper;
-        IAuth _auth;
+            IPasswordService _passService;
+            IUserRepository _repository;
+            IMapper _mapper;
+            IAuth _auth;
+            ICacheService _cache;
+            IConfiguration _configuration;
 
-        public UserService(IPasswordService passService, IUserRepository repository,
-                           IMapper mapper, IAuth auth)
-        {
-            _passService = passService;
-            _repository = repository;
-            _mapper = mapper;
-            _auth = auth;
-        }
+            public UserService(IPasswordService passService, IUserRepository repository,
+                               IMapper mapper, IAuth auth,
+                               ICacheService cache, IConfiguration configuration)
+            {
+                _passService = passService;
+                _repository = repository;
+                _mapper = mapper;
+                _auth = auth;
+                _cache = cache;
+                _configuration = configuration;
+            }
 
-        public async Task<UserReadDTO> getUserById(int id)
-        {
-            User user = await _repository.getUserById(id);
-            UserReadDTO userDTO = _mapper.Map<User, UserReadDTO>(user);
-            return userDTO;
-        }
+            public async Task<UserReadDTO> getUserById(int id)
+            {
+                string cacheKey = $"user:{id}";
+
+                // נסה לשלוף מה-cache
+                var cached = await _cache.GetAsync<UserReadDTO>(cacheKey);
+                if (cached != null)
+                {
+                    return cached; // Cache HIT ✅
+                }
+
+                // Cache MISS — שלוף מה-DB
+                User user = await _repository.getUserById(id);
+                UserReadDTO userDTO = _mapper.Map<User, UserReadDTO>(user);
+
+                // שמור ב-cache עם TTL מה-configuration
+                int ttlMinutes = _configuration.GetValue<int>("Redis:TTLMinutes");
+                await _cache.SetAsync(cacheKey, userDTO, TimeSpan.FromMinutes(ttlMinutes));
+
+                return userDTO;
+            }
 
         public async Task<(UserReadDTO user, string token)> addUser(UserCreateDTO user)
         {

@@ -74,7 +74,7 @@ builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IForgotPasswordService, ForgotPasswordService>();
 builder.Services.AddScoped<IOrderConfirmationEmailService, OrderConfirmationEmailService>();
 builder.Services.AddScoped<IRatingService, RatingService>();
-
+builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddExceptionHandler<ErrorHandlingMiddleware>();
 builder.Services.AddProblemDetails();
 
@@ -118,6 +118,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             }
         };
     });
+
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration["Redis:ConnectionString"];
+    options.InstanceName = "ShowsCenter:";
+});
 var app = builder.Build();
 
 app.UseExceptionHandler();
