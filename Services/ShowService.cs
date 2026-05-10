@@ -49,6 +49,22 @@ namespace Services
         {
             if (!await _auth.IsManager(userId))
                 return null;
+            // Disallow shows on Saturdays
+            if (showUDTO.Date.DayOfWeek == DayOfWeek.Saturday)
+                return null;
+
+            // Basic sanity: begin time must be before end time
+            if (showUDTO.BeginTime >= showUDTO.EndTime)
+                return null;
+
+            // Prevent scheduling conflicts: no other show on same date with overlapping time
+            var existingShows = await _repository.getAllShows();
+            bool conflict = existingShows.Any(s =>
+                s.Date == showUDTO.Date &&
+                (showUDTO.BeginTime < s.EndTime && s.BeginTime < showUDTO.EndTime)
+            );
+            if (conflict)
+                return null;
             Show show = _mapper.Map<ShowUpdateDTO, Show>(showUDTO);
             show = await _repository.updateOrder(show, id);
             ShowReadDTO showDTO = _mapper.Map<Show, ShowReadDTO>(show);
