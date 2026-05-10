@@ -13,11 +13,15 @@ namespace Services
         IPasswordService _passService;
         IUserRepository _repository;
         IMapper _mapper;
-        public UserService(IPasswordService passService, IUserRepository repository, IMapper mapper)
+        IAuth _auth;
+
+        public UserService(IPasswordService passService, IUserRepository repository,
+                           IMapper mapper, IAuth auth)
         {
             _passService = passService;
             _repository = repository;
             _mapper = mapper;
+            _auth = auth;
         }
 
         public async Task<UserReadDTO> getUserById(int id)
@@ -27,14 +31,16 @@ namespace Services
             return userDTO;
         }
 
-        public async Task<UserReadDTO> addUser(UserCreateDTO user)
+        public async Task<(UserReadDTO user, string token)> addUser(UserCreateDTO user)
         {
             if (_passService.getStrengthByPassword(user.Password).Strength < 2)
-                return null;
+                return (null, null);
             User newUser = _mapper.Map<UserCreateDTO, User>(user);
             newUser = await _repository.addUser(newUser);
             UserReadDTO userDTO = _mapper.Map<User, UserReadDTO>(newUser);
-            return userDTO;
+            bool isManager = await _auth.IsManager(newUser.Id);
+            string token = _auth.GenerateToken(newUser.Id, newUser.EmailAddress, isManager);
+            return (userDTO, token);
         }
 
         public async Task<UserReadDTO> UpdateUser(UserUpdateDTO userToUpdate, int id)
@@ -48,13 +54,15 @@ namespace Services
             UserReadDTO userDTO = _mapper.Map<User, UserReadDTO>(user);
             return userDTO;
         }
-        public async Task<UserReadDTO> Login(UserLoginDTO user)
+        public async Task<(UserReadDTO user, string token)> Login(UserLoginDTO user)
         {
             User loginUser = _mapper.Map<UserLoginDTO, User>(user);
             loginUser = await _repository.Login(loginUser);
+            if (loginUser == null) return (null, null);
             UserReadDTO logged = _mapper.Map<User, UserReadDTO>(loginUser);
-
-            return logged;
+            bool isManager = await _auth.IsManager(loginUser.Id);
+            string token = _auth.GenerateToken(loginUser.Id, loginUser.EmailAddress, isManager);
+            return (logged, token);
         }
 
     }

@@ -2,6 +2,7 @@
 using DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Services;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -28,6 +29,7 @@ namespace WebApiShop.Controllers
         }
 
         // GET api/<UsersController>/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<UserReadDTO>> Get(int id)
         {
@@ -37,17 +39,45 @@ namespace WebApiShop.Controllers
             return Ok(user);
         }
 
-        // POST api/<UsersController>
+        [AllowAnonymous]
+        [HttpPost("loginUser")]
+        public async Task<ActionResult<UserReadDTO>> GetLogin([FromBody] UserLoginDTO loginUser)
+        {
+            _logger.LogInformation($"Login attempted with email: {loginUser.EmailAddress}");
+            var (user, token) = await _userService.Login(loginUser);
+            if (user == null) return NoContent();
+
+            Response.Cookies.Append("jwt", token, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,         // HTTPS בלבד
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddHours(12)
+            });
+
+            return Ok(user);
+        }
+
+        [AllowAnonymous]
         [HttpPost("user")]
         public async Task<ActionResult<UserReadDTO>> POST([FromBody] UserCreateDTO user)
         {
-            UserReadDTO newUser = await _userService.addUser(user);
-            if (newUser == null)
-                return BadRequest("Password is too weak");
+            var (newUser, token) = await _userService.addUser(user);
+            if (newUser == null) return BadRequest("Password is too weak");
+
+            Response.Cookies.Append("jwt", token, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddHours(12)
+            });
+
             return CreatedAtAction(nameof(Get), new { newUser.Id }, newUser);
         }
 
         // PUT api/<UsersController>/5
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<ActionResult<UserReadDTO>> PUT([FromBody] UserUpdateDTO userToUpdate, int id)
         {
@@ -59,22 +89,15 @@ namespace WebApiShop.Controllers
 
 
         }
-        [HttpPost("loginUser")]
-        public async Task<ActionResult<UserReadDTO>> GetLogin([FromBody] UserLoginDTO loginUser)
-        {
-            _logger.LogInformation($"Login attemted with email: {loginUser.EmailAddress}, password: {loginUser.Password}");
-            UserReadDTO user = await _userService.Login(loginUser);
-            if (user == null)
-                return NoContent();
-            return Ok(user);
-        }
 
+        [ManagerOnly]
         [HttpGet("isManger")]
         public async Task<Boolean> IsManager(int id)
         {
             return await _auth.IsManager(id);
         }
 
+        [AllowAnonymous]
         [HttpPost("forgot-password")]
         public async Task<ActionResult<ForgotPasswordResponse>> ForgotPassword([FromBody] ForgotPasswordRequest request, CancellationToken ct)
         {
@@ -82,6 +105,7 @@ namespace WebApiShop.Controllers
             return Ok(new ForgotPasswordResponse { Sent = result.Sent, Message = result.Message });
         }
 
+        [AllowAnonymous]
         [HttpPost("reset-password")]
         public async Task<ActionResult<ResetPasswordResponse>> ResetPassword([FromBody] ResetPasswordRequest request, CancellationToken ct)
         {
