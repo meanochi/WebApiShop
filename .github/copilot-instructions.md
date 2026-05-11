@@ -1,93 +1,203 @@
-Copilot instructions — ShowsCenter (WebApiShop)
-=============================================
+# Copilot instructions — ShowsCenter (WebApiShop)
 
-What this app does
-------------------
-ShowsCenter is an ASP.NET Core Web API that manages shows, providers, seating sections, orders and users. It exposes REST endpoints for CRUD operations, seat locking/checkout flows, password reset, and sends order confirmation emails. A small static UI in `WebApiShop/wwwroot` is useful for manual end-to-end testing.
+## **What this app does**
 
-Tech stack
-----------
-- Platform: .NET 9 (C# 13)
-- Web: ASP.NET Core Web API
-- ORM: EF Core (DbContext in `Entities`)
-- Mapping: AutoMapper
-- Auth: JWT Bearer tokens (cookies supported)
-- Caching: StackExchange.Redis (optional)
-- Email: Smtp client (configurable via `Email` section)
-- Logging: NLog
-- Tests: xUnit integration tests use in-memory Sqlite
+ShowsCenter is a layered ASP.NET Core 9 Web API for event management and ticketing.
+It manages the following core entities:
 
-Project structure (important folders)
-------------------------------------
-ShowsCenter/
-├─ WebApiShop/      # API entry (Program.cs), controllers, static UI, appsettings
-├─ Entities/        # EF models, DbContext, migrations
-├─ Repositories/    # data access layer (EF implementations)
-├─ Services/        # business logic, helpers, DI registrations, AutoMapper profiles
-├─ DTOs/            # request/response DTOs
-└─ Tests/           # xUnit integration/unit tests (Sqlite in-memory)
+| Domain               | Responsibility                                                      |
+| -------------------- | ------------------------------------------------------------------- |
+| **Shows**            | Create, update, publish, and query event listings                   |
+| **Providers**        | Manage event operators and show owners                              |
+| **Seating Sections** | Define venue sections, seat tiers, and pricing                      |
+| **Orders**           | Reserve seats, create orders, checkout, and manage order lifecycles |
+| **Users**            | Register, authenticate, and manage user profiles                    |
+| **Password Reset**   | Issue reset codes, validate tokens, and update passwords            |
 
-Key files to review first
--------------------------
-- `WebApiShop/Program.cs` — DI, auth, Redis, middleware and Swagger wiring.
-- `Entities/ShowsCenterContext.cs` — EF model configuration and table mappings.
-- `Services/` — business rules and where to add new service logic.
-- `Repositories/` — where EF queries and transactions live; tests cover these.
-- `WebApiShop/appsettings*.json` — required runtime keys (ConnectionStrings, Jwt, Redis, Email).
+The app also sends order confirmation emails and includes a small static UI under `WebApiShop/wwwroot` for manual validation.
 
-How to build, run and test (quick)
----------------------------------
-1. Build: `dotnet build` (root)
-2. Run API locally: `cd WebApiShop` then `dotnet run`
-3. Apply migrations (when changing EF model):
-   `dotnet ef database update --project Entities --startup-project WebApiShop`
-   (Always pass `--startup-project` so Program.cs and appsettings are picked up.)
-4. Run tests: `dotnet test` (tests use in-memory Sqlite and call EnsureCreated)
+## **Tech stack**
 
-Common pitfalls & notes
-----------------------
-- Program.cs: avoid registering `ShowsCenterContext` multiple times — keep a single `AddDbContext` pointing at the intended connection string.
-- appsettings keys used: `ConnectionStrings:ShowsCenter` (or DefaultConnection), `Jwt:Issuer`, `Jwt:Audience`, `Jwt:Key`, `Redis:ConnectionString`, `Redis:TTLMinutes`, `Email` section.
-- Tests use Sqlite in-memory; when changing entity mappings/migrations update tests that rely on EnsureCreated or snapshots.
-- Some source contains Hebrew text; keep files UTF-8 to avoid encoding issues.
+| Area        | Technology                           |
+| ----------- | ------------------------------------ |
+| Framework   | .NET 9, C# 13                        |
+| Web         | ASP.NET Core Web API                 |
+| Data access | Entity Framework Core 9 (Code First) |
+| Mapping     | AutoMapper                           |
+| Auth        | JWT Bearer tokens + cookie fallback  |
+| Cache       | StackExchange.Redis (optional)       |
+| Logging     | NLog                                 |
+| Testing     | xUnit with in-memory Sqlite          |
+| API docs    | Swagger / OpenAPI                    |
 
-Coding guidelines (follow the example repository style)
-----------------------------------------------------
-1. Layering: Controllers -> Services -> Repositories -> DbContext. Keep controllers thin.
-2. Async first: prefer `async Task<T>` signatures throughout services and repositories.
-3. Mapping: use AutoMapper profiles for entity <-> DTO mappings. Add new mappings under `Services/AutoMapper.cs`.
-4. DTOs: use `record` types for DTOs; never return Entity objects from controllers.
-5. Authorization: use IAuth and Manager checks where needed; add attributes/middleware for cross-cutting concerns.
-6. Caching: use `ICacheService` for user-level caches; invalidate on update.
+## **Domain and architecture overview**
 
-Feature development checklist (recommended order)
-----------------------------------------------
-1. Add/adjust Entity in `Entities/` and register `DbSet` in `ShowsCenterContext`.
-2. Add DTO records in `DTOs/` and AutoMapper mapping.
-3. Add repository interface + implementation in `Repositories/`.
-4. Add service interface + implementation in `Services/` and register in `Program.cs` as `Scoped`.
-5. Add controller in `WebApiShop/Controllers/` with route `api/<resource>` and proper model validation and auth attributes.
-6. Add unit tests for service logic and an integration test for repository behavior (Sqlite in-memory).
+This project uses a layered monolith architecture.
+The canonical flow is:
 
-Tests and CI notes
-------------------
-- Integration tests (in `Tests/`) use Sqlite in-memory and call `EnsureCreated`. They seed data explicitly — inspect tests for required fields when creating entities.
-- Run `dotnet test` after changes; when EF model changes require migrations, update/verify tests or use an in-memory approach in tests.
+**Controllers → Services → Repositories → Entities**
 
-Middleware & pipeline
----------------------
-Order matters: exception handling -> rating middleware -> static files -> authentication -> authorization -> controllers. See `Program.cs` for exact wiring.
+### **Layer responsibilities**
 
-Commands & tools
-----------------
-- EF tools: `dotnet tool install --global dotnet-ef`
-- Run: `dotnet run --project WebApiShop`
-- Tests: `dotnet test`
+| Layer        | Responsibility                                         |
+| ------------ | ------------------------------------------------------ |
+| Controllers  | Handle HTTP requests, validate input, return responses |
+| Services     | Business logic, validation, orchestration              |
+| Repositories | EF Core persistence and queries                        |
+| Entities     | Domain models, navigation properties, DB mapping       |
 
-Repository behaviour hints
--------------------------
-- Password strength is checked using zxcvbn via `IPasswordService` (strength >= 2 required in places).
-- JWT tokens are produced by `IAuth.GenerateToken` and the app also reads tokens from a `jwt` cookie in `JwtBearerEvents.OnMessageReceived`.
-- Email sending uses `EmailSenderOptions` (`Email` section in appsettings); tests may not send email — EmailSender is used in production flows.
+### **Architecture rules**
 
-Keep this file synced with `README.md` and `Program.cs` when you add services, DI registrations or configuration keys.
+- **Controllers must never access `DbContext` directly.**
+- **Controllers should only call service interfaces.**
+- **Services may call repositories and perform business logic.**
+- **Repositories may only interact with EF Core.**
+- **Do not place AutoMapper or DTO mapping inside repositories.**
+
+## **Solution structure**
+
+Root solution: `WebApiShop.sln`
+
+| Project         | Purpose                                                               |
+| --------------- | --------------------------------------------------------------------- |
+| `WebApiShop/`   | API startup, controllers, middleware, appsettings, Swagger, static UI |
+| `Entities/`     | EF entities, `ShowsCenterContext`, migrations                         |
+| `Repositories/` | Repository interfaces and EF implementations                          |
+| `Services/`     | Business logic, service interfaces, AutoMapper profiles               |
+| `DTOs/`         | Request/response contract records                                     |
+| `Tests/`        | xUnit unit and integration tests                                      |
+
+### **Folder responsibilities**
+
+- `DTOs/`: request and response DTO records only.
+- `Entities/`: domain models, navigation properties, and DbContext mapping.
+- `Repositories/`: persistence operations and query logic.
+- `Services/`: business rules, validation, and orchestration.
+- `WebApiShop/Controllers/`: HTTP-specific handling and routing.
+
+## **Modern .NET 9 standards**
+
+Use idiomatic C# 13 features across the codebase.
+
+### **Standards**
+
+- Prefer primary constructors for DI in services, repositories, and controllers.
+- Use collection expressions for DTO initialization.
+- Use `required` properties in DTOs when values are mandatory.
+- Use file-scoped namespaces.
+- Use `async Task` / `Task<T>` for asynchronous I/O.
+- Accept `CancellationToken` in service and repository methods.
+
+### **Example**
+
+```csharp
+public sealed class ShowService : IShowService
+{
+    private readonly IShowRepository _showRepository;
+
+    public ShowService(IShowRepository showRepository) => _showRepository = showRepository;
+}
+```
+
+## **Error handling and logging**
+
+This repository uses centralized middleware and `ProblemDetails`.
+
+### **Error handling**
+
+- Use `app.UseExceptionHandler()` in `Program.cs`.
+- Implement custom domain and validation exceptions.
+- Convert exceptions to `ProblemDetails` responses.
+- Avoid throwing raw `Exception` from service code whenever possible.
+
+### **Logging**
+
+- Use NLog for structured logging.
+- Inject `ILogger<T>` in services and controllers.
+- Enrich logs with request IDs and correlation data.
+- Avoid logging secrets or sensitive values.
+
+## **Configuration and security**
+
+### **Mandatory configuration keys**
+
+| Key                             | Purpose                          |
+| ------------------------------- | -------------------------------- |
+| `ConnectionStrings:ShowsCenter` | Database connection              |
+| `Jwt:Issuer`                    | JWT issuer validation            |
+| `Jwt:Audience`                  | JWT audience validation          |
+| `Jwt:Key`                       | JWT signing key                  |
+| `Redis:ConnectionString`        | Redis endpoint                   |
+| `Email:SmtpHost`                | SMTP server host                 |
+| `Email:SmtpPort`                | SMTP server port                 |
+| `Email:Username`                | SMTP username                    |
+| `Email:Password`                | SMTP password                    |
+| `Email:FromAddress`             | Sender email address             |
+| `PasswordReset`                 | Password reset workflow settings |
+
+### **Validation guidance**
+
+- Validate required config keys at startup.
+- Fail fast with clear messages if settings are missing.
+- Prefer `IConfiguration.GetValue<string>(...)`.
+- Do not hardcode secrets.
+
+## **Testing guidance**
+
+Tests are the source of truth.
+
+### **Requirements**
+
+- New features must include tests.
+- Use xUnit for unit and integration tests.
+- Use in-memory Sqlite for persistence tests.
+- Seed test data explicitly.
+- Call `EnsureCreated()` when required.
+- Keep tests deterministic.
+
+### **Recommended coverage**
+
+- Unit tests for service business logic.
+- Repository tests for EF mapping and queries.
+- Integration tests for controller routes and persistence flows.
+
+## **Preserve Hebrew support**
+
+- Save files as UTF-8.
+- Preserve Hebrew text and punctuation.
+- Do not remove or corrupt Hebrew comments.
+
+## **Agent quick start**
+
+1. Read `WebApiShop/Program.cs`.
+2. Review `Entities/ShowsCenterContext.cs`.
+3. Inspect `Services/` and `Repositories/`.
+4. Review `Tests/` for expected behavior.
+5. Check `WebApiShop/appsettings.json` and `WebApiShop/appsettings.Development.json`.
+
+## **Build and run commands**
+
+- `dotnet restore`
+- `dotnet build`
+- `cd WebApiShop && dotnet run`
+- `dotnet test`
+- `dotnet ef migrations add <Name> --project Entities --startup-project WebApiShop`
+- `dotnet ef database update --project Entities --startup-project WebApiShop`
+
+## **Important rules and pitfalls**
+
+- Do not inject `ShowsCenterContext` into controllers.
+- Do not query the database from controllers.
+- Keep controllers thin.
+- Keep `Program.cs` focused on startup wiring.
+- Avoid duplicate `DbContext` registrations.
+- Use `record` DTOs for API contracts.
+- Prefer `Scoped` for services and repositories.
+- Update docs and tests when configuration or runtime behavior changes.
+
+## **If uncertain**
+
+- Prefer small, incremental changes.
+- Run `dotnet test` frequently.
+- Validate behavior against existing controllers and tests.
+- Keep the layered architecture intact.
