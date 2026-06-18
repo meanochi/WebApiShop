@@ -1,13 +1,15 @@
 ﻿using AutoMapper;
 using DTOs;
-using Microsoft.AspNetCore.Mvc;
-using Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WebApiShop.Controllers
 {
+    [EnableRateLimiting("strict")]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase

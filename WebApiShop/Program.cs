@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ShowsCenter");
@@ -18,7 +20,6 @@ builder.Services.AddDbContext<ShowsCenterContext>(options =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-
 builder.Services.AddScoped<IProviderRepository, ProviderRepository>();
 builder.Services.AddScoped<ISectionRepository, SectionRepository>();
 builder.Services.AddScoped<IShowsRepository, ShowsRepository>();
@@ -77,77 +78,104 @@ builder.Services.AddScoped<IRatingService, RatingService>();
 builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddExceptionHandler<ErrorHandlingMiddleware>();
 builder.Services.AddProblemDetails();
-
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Host.UseNLog();
-builder.Services.AddCors(options =>
+// הגדרת Rate Limiting מסוג Sliding Window
+builder.Services.AddRateLimiter(options =>
 {
-    options.AddDefaultPolicy(policy =>
+
+    options.AddSlidingWindowLimiter("strict", limiterOptions =>
     {
-        policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader();
+        limiterOptions.PermitLimit = 5; // רק 5 ניסיונות!
+        limiterOptions.Window = TimeSpan.FromMinutes(5);
+        limiterOptions.SegmentsPerWindow = 3;
     });
-});
 
-// JWT Authentication
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+    options.AddSlidingWindowLimiter("standard", limiterOptions =>
     {
-        options.TokenValidationParameters = new TokenValidationParameters
+        limiterOptions.PermitLimit = 100;
+        limiterOptions.Window = TimeSpan.FromMinutes(1); // גודל חלון הזמן (לדוגמה: דקה)
+        limiterOptions.SegmentsPerWindow = 3; // לכמה מקטעים החלון מחולק (במקרה הזה: כל מקטע הוא 20 שניות)
+        limiterOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        limiterOptions.QueueLimit = 10; // כמה בקשות יכולות להמתין בתור לפני שהן נדחות    });
+    });
+    // שינוי הסטטוס קוד במקרה של דחייה ל-429 (Too Many Requests) - במקום 503 שזה ברירת המחדל
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    });
+    builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+    builder.Host.UseNLog();
+    builder.Services.AddCors(options =>
+    {
+        options.AddDefaultPolicy(policy =>
         {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
-        };
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        });
+    });
 
-        // חילוץ מה-Cookie
-        options.Events = new JwtBearerEvents
+    // JWT Authentication
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
         {
-            OnMessageReceived = context =>
+            options.TokenValidationParameters = new TokenValidationParameters
             {
-                var cookie = context.Request.Cookies["jwt"];
-                if (!string.IsNullOrEmpty(cookie))
-                    context.Token = cookie;
-                return Task.CompletedTask;
-            }
-        };
-    });
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                ValidAudience = builder.Configuration["Jwt:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+            };
 
-builder.Services.AddStackExchangeRedisCache(options =>
-{
-    options.Configuration = builder.Configuration["Redis:ConnectionString"];
-    options.InstanceName = "ShowsCenter:";
-});
-var app = builder.Build();
+            // חילוץ מה-Cookie
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    var cookie = context.Request.Cookies["jwt"];
+                    if (!string.IsNullOrEmpty(cookie))
+                        context.Token = cookie;
+                    return Task.CompletedTask;
+                }
+            };
+        });
 
-app.UseExceptionHandler();
-
-app.UseRating();
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
+    builder.Services.AddStackExchangeRedisCache(options =>
     {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "ShowsCenter API V1");
+        options.Configuration = builder.Configuration["Redis:ConnectionString"];
+        options.InstanceName = "ShowsCenter:";
     });
-}
-app.UseCors();
+    var app = builder.Build();
 
-app.UseHttpsRedirection();
+    app.UseExceptionHandler();
 
-app.UseStaticFiles();
+    app.UseRating();
 
-app.UseAuthentication();  // ← הוסף את זה
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI(options =>
+        {
+            options.SwaggerEndpoint("/swagger/v1/swagger.json", "ShowsCenter API V1");
+        });
+    }
 
-app.UseAuthorization();
+    app.UseRouting();
 
-app.MapControllers();
+    app.UseCors();
 
-app.Run();
+    app.UseRateLimiter();
+
+    app.UseHttpsRedirection();
+
+    app.UseStaticFiles();
+
+    app.UseAuthentication();  // ← הוסף את זה
+
+    app.UseAuthorization();
+
+    app.MapControllers();
+
+    app.Run();
+

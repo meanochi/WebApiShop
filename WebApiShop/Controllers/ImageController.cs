@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.AspNetCore.RateLimiting;
+[EnableRateLimiting("standard")]
 [Route("api/[controller]")]
 [ApiController]
 public class ImagesController : ControllerBase
