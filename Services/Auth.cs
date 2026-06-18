@@ -13,11 +13,13 @@ namespace Services
         IUserRepository _repository;
         IConfiguration _configuration;
         List<string> _managerEmails = ["r0583285891@gmail.com", "michal.icecream@gmail.com"];
+        private readonly IPasswordService _passService;
 
-        public Auth(IUserRepository repository, IConfiguration configuration)
+        public Auth(IUserRepository repository, IConfiguration configuration, IPasswordService passService)
         {
             _repository = repository;
             _configuration = configuration;
+            _passService = passService;
         }
 
         public async Task<bool> IsManager(int id)
@@ -49,6 +51,28 @@ namespace Services
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public async Task<User?> Login(string email, string password)
+        {
+            // 1. שליפת המשתמש מהרפוזיטורי לפי אימייל
+            User user = await _repository.GetUserByEmail(email);
+
+            if (user == null)
+            {
+                return null; // המשתמש לא קיים
+            }
+
+            // 2. אימות הסיסמה באמצעות ה-PasswordService
+            bool isPasswordValid = _passService.VerifyPassword(password, user.Password);
+
+            if (!isPasswordValid)
+            {
+                return null; // הסיסמה שגויה
+            }
+
+            // 3. אם הכל תקין - ממשיכים לייצר Token או להחזיר את המשתמש
+            return user;
         }
     }
 }

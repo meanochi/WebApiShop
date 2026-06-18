@@ -47,5 +47,10 @@ namespace Repositories
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.EmailAddress == user.EmailAddress && u.Password == user.Password);
         }
+
+        public async Task<User> GetUserByEmail(string email)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.EmailAddress == email);
+        }
     }
 }

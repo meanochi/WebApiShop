@@ -162,7 +162,7 @@ public partial class ShowsCenterContext : DbContext
                 .HasColumnName("last_name");
             entity.Property(e => e.Password)
                 .IsRequired()
-                .HasMaxLength(15)
+                .HasMaxLength(60)
                 .HasColumnName("password");
             entity.Property(e => e.PhoneNumber)
                 .HasMaxLength(13)

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DTOs;
 using Entities;
+using MediaBrowser.Model.Dto;
 using MediaBrowser.Model.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -56,7 +57,9 @@ namespace Services
         {
             if (_passService.getStrengthByPassword(user.Password).Strength < 2)
                 return (null, null);
+            string securedPassword = _passService.HashPassword(user.Password);
             User newUser = _mapper.Map<UserCreateDTO, User>(user);
+            newUser.Password = securedPassword;
             newUser = await _repository.addUser(newUser);
             UserReadDTO userDTO = _mapper.Map<User, UserReadDTO>(newUser);
             bool isManager = await _auth.IsManager(newUser.Id);
@@ -83,7 +86,7 @@ namespace Services
         public async Task<(UserReadDTO user, string token)> Login(UserLoginDTO user)
         {
             User loginUser = _mapper.Map<UserLoginDTO, User>(user);
-            loginUser = await _repository.Login(loginUser);
+            loginUser = await _auth.Login(loginUser.EmailAddress, loginUser.Password);
             if (loginUser == null) return (null, null);
             UserReadDTO logged = _mapper.Map<User, UserReadDTO>(loginUser);
             bool isManager = await _auth.IsManager(loginUser.Id);

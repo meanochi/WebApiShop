@@ -8,5 +8,6 @@ namespace Repositories
         Task<User> getUserById(int id);
         Task<User> UpdateUser(User userToUpdate);
         Task<User> Login(User loginUser);
+        Task<User> GetUserByEmail(string email);
     }
 }
